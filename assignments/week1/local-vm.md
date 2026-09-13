@@ -10,11 +10,12 @@ A step-by-step guide for setting up an Ubuntu 22.04 LTS virtual machine using Or
 - [2. Install VirtualBox](#2-install-virtualbox)
 - [3. Create the Ubuntu VM](#3-create-the-ubuntu-vm)
 - [4. Start and Log In](#4-start-and-log-in)
-- [5. Login Screenshot](#5-login-screenshot)
-- [6. VirtualBox CLI Alternative](#6-virtualbox-cli-alternative)
-- [7. System-Specific Notes](#7-system-specific-notes)
+- [5. Enable VirtualBox Guest Additions](#5-enable-virtualbox-guest-additions)
+- [6. Login Screenshot](#6-login-screenshot)
+- [7. VirtualBox CLI Alternative](#7-virtualbox-cli-alternative)
+- [8. System-Specific Notes](#8-system-specific-notes)
 - [Contributing](#contributing)
-- Appendix -- Usefull commands added by Gregor
+- [Appendix -- Useful Commands Added by Gregor](#appendix----useful-commands-added-by-gregor)
 
 ---
 
@@ -54,29 +55,29 @@ Launch VirtualBox and execute the following steps:
 
 1. Click **New**.
 2. Set the VM details:
-   - **Name:** `Ubuntu 22.04`
-   - **Type:** `Linux`
-   - **Version:** `Ubuntu (64-bit)`
-3. Assign **2–4 GB of RAM** (depending on your host's available memory).
+   - **Name:** Ubuntu 22.04
+   - **Type:** Linux
+   - **Version:** Ubuntu (64-bit)
+3. Assign **2–4 GB of RAM** depending on the host's available memory.
 4. Create a virtual hard disk with a capacity of approximately **20 GB**.
-5. Select the **Ubuntu 22.04 ISO image** as your installation media.
+5. Select the **Ubuntu 22.04 ISO image** as the installation media.
 6. Start the VM and complete the Ubuntu OS installation flow.
-7. Create your username and password when prompted.
+7. Create a username and password when prompted.
 
 ---
 
 ## 4. Start and Log In
 
-1. Start the Ubuntu VM from VirtualBox and log in using your user credentials.
+1. Start the Ubuntu VM from VirtualBox and log in using the configured user credentials.
 2. Open the Ubuntu Terminal and verify the system hostname:
 
 ```bash
 hostname
 ```
 
-> **Target Hostname:** `kbass-vbox`
+*Target Hostname:* `kbass-vbox`
 
-3. Verify system kernel and operations:
+3. Verify the system kernel and operating system information:
 
 ```bash
 uname -a
@@ -90,17 +91,34 @@ ls -la
 
 ---
 
-## 5. Login Screenshot
+## 5. Enable VirtualBox Guest Additions
+
+VirtualBox Guest Additions were enabled to improve integration between the Ubuntu guest VM and the Windows host system.
+
+The Guest Additions were installed using the VirtualBox CD image:
+
+1. Start the Ubuntu virtual machine in VirtualBox.
+2. From the VirtualBox menu, select **Devices → Insert Guest Additions CD Image**.
+3. Allow the Guest Additions CD image to be mounted inside the Ubuntu VM.
+4. Open the mounted Guest Additions CD and run the installation program.
+5. Allow the installation to complete.
+6. Restart the Ubuntu virtual machine to apply the Guest Additions configuration.
+7. After restarting, verify that the Guest Additions features are functioning correctly.
+
+This installation provides additional integration features between the Ubuntu guest and the Windows host, including improved display and mouse integration.
+
+---
+
+## 6. Login Screenshot
 
 > [!NOTE]
 > Below is the screenshot verifying a successful login to the Ubuntu VM and execution of terminal commands.
-> 
 
 ![Ubuntu VM Login Screenshot](./vm-login.png)
 
 ---
 
-## 6. VirtualBox CLI Alternative
+## 7. VirtualBox CLI Alternative
 
 VirtualBox includes `VBoxManage`, a command-line interface tool for managing virtual machines.
 
@@ -119,6 +137,11 @@ VBoxManage createvm --name "Ubuntu 22.04" --ostype "Ubuntu_64" --register
 
 ---
 
+## 8. System-Specific Notes
+
+The VM was configured and tested using the Windows host environment with Git Bash. Configuration values such as available memory, virtual disk size, and installation media may vary depending on the host system.
+
+---
 
 ## Contributing
 
@@ -128,13 +151,15 @@ If you locate an error in the official lecture notes, please follow standard ope
 2. **Create a branch** for your fix (`git checkout -b fix/lecture-note-error`).
 3. **Make and commit** your changes (`git commit -m "Fix typo in VM setup notes"`).
 4. **Push** the branch to GitHub (`git push origin fix/lecture-note-error`).
-5. Open a **Pull Request** providing a clear description of the correction.
+5. **Open a Pull Request** providing a clear description of the correction.
 
-## Appendix -- Useful commands added by Gregor
+---
 
-Not tested
+## Appendix -- Useful Commands Added by Gregor
 
-VirtualBox CLI – Full Script (Git Bash)
+*(Not tested)*
+
+### VirtualBox CLI – Full Script (Git Bash)
 
 ```bash
 # Create the VM and register it
@@ -143,7 +168,7 @@ VBoxManage createvm --name "Ubuntu_22.04" --ostype "Ubuntu_64" --register
 # Set RAM & video memory
 VBoxManage modifyvm "Ubuntu_22.04" --memory 4096 --vram 128
 
-# Create a 25 GB dynamically allocated VDI
+# Create a 25 GB dynamically allocated VDI
 VBoxManage createhd --filename "$HOME/VirtualBox VMs/Ubuntu_22.04/Ubuntu_22.04.vdi" \
                     --size 25600 --variant Standard
 
@@ -159,12 +184,9 @@ VBoxManage storagectl "Ubuntu_22.04" --name "IDE Controller" --add ide
 VBoxManage storageattach "Ubuntu_22.04" --storagectl "IDE Controller" \
                     --port 0 --device 0 --type dvddrive --medium "$ISO_PATH"
 
-# (Optional) Enable NAT networking with port‑forwarding for SSH
+# (Optional) Enable NAT networking with port-forwarding for SSH
 VBoxManage modifyvm "Ubuntu_22.04" --natpf1 "ssh,tcp,,2222,,22"
-```
 
-Start the VM in headless mode (or remove `--type headless` to see the GUI)
-
-```
+# Start the VM in headless mode (or remove --type headless to see the GUI)
 VBoxManage startvm "Ubuntu_22.04" --type headless
 ```

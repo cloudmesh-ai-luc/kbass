@@ -15,14 +15,14 @@ Note:
   * [x] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3/jetstream-vm.md)
 
 
-* [ ] Assignment W3.2: VM on Chameleon Cloud (Due Sep 17, 2026, 9am)
-  * [ ] Set your preferred time zone in Chameleon settings.
-  * [ ] Make sure you have a key in your `.ssh` dir on your laptop and upload the public key to Chameleon.
-  * [ ] Explore the portal and browse around to develop a plan first.
-  * [ ] Make a reservation not exceeding 1 hour.
-  * [ ] Start up a VM using a Chameleon Cloud image for Ubuntu 24.04 using the smallest image size possible.
-  * [ ] Document your activity with a screenshot of the terminal (800x600).
-  * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3/chameleon-vm.md)
+* [x] Assignment W3.2: VM on Chameleon Cloud (Due Sep 17, 2026, 9am)
+  * [x] Set your preferred time zone in Chameleon settings.
+  * [x] Make sure you have a key in your `.ssh` dir on your laptop and upload the public key to Chameleon.
+  * [x] Explore the portal and browse around to develop a plan first.
+  * [x] Make a reservation not exceeding 1 hour.
+  * [x] Start up a VM using a Chameleon Cloud image for Ubuntu 24.04 using the smallest image size possible.
+  * [x] Document your activity with a screenshot of the terminal (800x600).
+  * [x] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3/chameleon-vm.md)
 
 
 * [ ] Assignment W3.3: OPTIONAL: VM on public cloud (Due Sep 17, 2026, 9am)
@@ -34,7 +34,7 @@ Note:
 * [ ] Assignment W3.4: Compare (Due Sep 17, 2026, 9am)
   * [ ] Compare your experience between starting a VM on your local machine vs using Chameleon Cloud.
   * [ ] Put all assignment answers into `<repor>/assignments/week3.md`. [LINK]
-  * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass4/blob/main/assignments/week3/week3.md)
+  * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3.md)
      
 * [ ] Assignment W3.5: README.md (Due Sep 17, 2026, 9am)
   * [ ] put your link here  [LINK]
@@ -62,7 +62,7 @@ Note:
   * [x] Choose one backup method and outline the setup steps.
   * [x] Create a weekly backup schedule (day, time, what to back up).
   * [x] Research an example from cloud computing where a missing backup strategy led to issues and write a short incident case.
-  * [x] Submit to `/assignments/week2/backup.md`. [LINK](https://github.com/cloudmesh-ai-luc/kbass4/blob/main/assignments/week2/backup.md)
+  * [x] Submit to `/assignments/week2/backup.md`. [LINK](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week2/backup.md)
 
 
 * [x] Assignment W2.4: Local VM (Due Sep 10, 2026, 9am)
@@ -70,7 +70,7 @@ Note:
   * [x] Pick a hypervisor (VirtualBox, VMware, Hyper-V, Multipass). [Which?]
   * [x] Create and start a minimal VM (e.g., Ubuntu 22.04).
   * [x] Capture proof of login with a terminal screenshot (≤ 800×600 px) showing your prompt and a command.
-  * [x] Write/update the tutorial in `assignments/week1/local-vm.md` and save the screenshot as `assignments/week1/vm-login.png`. [LINK/s](https://github.com/cloudmesh-ai-luc/kbass4/blob/main/assignments/week1/local-vm.md)
+  * [x] Write/update the tutorial in `assignments/week1/local-vm.md` and save the screenshot as `assignments/week1/vm-login.png`. [LINK/s](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week1/local-vm.md)
 
 
 * [] Assignment W2.5: Project proposal (Due Sep 10, 2026, 9am)
