@@ -34,7 +34,7 @@ Note:
 * [ ] Assignment W3.4: Compare (Due Sep 17, 2026, 9am)
   * [ ] Compare your experience between starting a VM on your local machine vs using Chameleon Cloud.
   * [ ] Put all assignment answers into `<repor>/assignments/week3.md`. [LINK]
-  * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass4/blob/main/assignments/week3/week3.md)
+  * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3.md)
      
 * [ ] Assignment W3.5: README.md (Due Sep 17, 2026, 9am)
   * [ ] put your link here  [LINK]
