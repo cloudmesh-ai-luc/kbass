@@ -40,7 +40,7 @@ Note:
   * [x] put your link here  [LINK](https://github.com/cloudmesh-ai-luc/kbass/edit/main/README.md)
      
  * [x] Assignment W3.6 git from commandline
-   * [ ] put the url of a pull request here
+   * [x] put the url of a pull request here: https://github.com/cloudmesh-ai-luc/kbass/pull/11
 
 ## Week 2
   
