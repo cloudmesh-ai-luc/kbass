@@ -31,15 +31,15 @@ Note:
   * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass4/blob/main/assignments/week3/vm.md)
 
 
-* [ ] Assignment W3.4: Compare (Due Sep 17, 2026, 9am)
-  * [ ] Compare your experience between starting a VM on your local machine vs using Chameleon Cloud.
-  * [ ] Put all assignment answers into `<repor>/assignments/week3.md`. [LINK]
-  * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3.md)
+* [x] Assignment W3.4: Compare (Due Sep 17, 2026, 9am)
+  * [x] Compare your experience between starting a VM on your local machine vs using Chameleon Cloud.
+  * [x] Put all assignment answers into `<repor>/assignments/week3.md`. [LINK]
+  * [x] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3.md)
      
-* [ ] Assignment W3.5: README.md (Due Sep 17, 2026, 9am)
-  * [ ] put your link here  [LINK]
+* [x] Assignment W3.5: README.md (Due Sep 17, 2026, 9am)
+  * [x] put your link here  [LINK](https://github.com/cloudmesh-ai-luc/kbass/edit/main/README.md)
      
- * [ ] Assignment W3.6 git from commandline
+ * [x] Assignment W3.6 git from commandline
    * [ ] put the url of a pull request here
 
 ## Week 2
