@@ -1,10 +1,9 @@
 # kbass
 
+Comp488 | Khalidou Bass | kbass4@luc.edu
+
 *  Accounts: https://github.com/cloudmesh-ai-luc/kbass
 
-Note:
-*  put files in `<repor>/assignments/week3/`
-*  Update all YOURREPO
 
 ## Week 3
 
