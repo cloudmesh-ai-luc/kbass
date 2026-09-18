@@ -1,6 +1,4 @@
-# Week 4
-
-## W4.1 Local Virtual Machine Management with Multipass
+# W4.1 Local Virtual Machine Management with Multipass
 
 ### Overview
 
@@ -74,7 +72,6 @@ The VM configuration is defined using variables:
 
 ```makefile
 VM_NAME = comp488-kbass4
-VM2_NAME = comp488-kbass4-2
 IMAGE = 22.04
 CPUS = 2
 MEMORY = 2G
