@@ -4,7 +4,20 @@
 
 *  Accounts: https://github.com/cloudmesh-ai-luc/kbass
 
+## Week 4
 
+* [x] Assignment W4.1: VM Management with Makefiles (Due Sep 24, 2026, 9am)
+  * [x] Create a Makefile to manage the lifecycle of a local VM.
+  * [x] Demonstrate how to manage multiple local VMs.
+  * [x] Create a Makefile to manage VMs on Jetstream 2.
+  * [x] Demonstrate how to manage multiple VMs on Jetstream 2.
+  * [x] Create a Makefile to manage VMs on Chameleon Cloud.
+  * [x] Explain how to manage multiple VMs on Chameleon Cloud.
+  * [x] Organize the Makefiles for local and cloud environments into separate directories.
+  * [x] [Local VM Report](assignments/week4/local/week4-local.md)
+  * [x] [Jetstream 2 Report](assignments/week4/jetstream/week4-jetstream.md)
+  * [x] [Chameleon Cloud Report](assignments/week4/chameleon/week4-chameleon.md)
+        
 ## Week 3
 
 * [x] Assignment W3.1: VM on Jetstream (Due Sep 17, 2026, 9am)
