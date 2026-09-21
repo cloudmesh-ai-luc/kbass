@@ -21,7 +21,7 @@
 
 - [x] Assignment W4.3: VM on Chameleon Cloud
   - [x] Install the OpenStack command-line client.
-  - [ ] Install python-chi.
+  - [x] Install python-chi.
   - [x] Write a Makefile with all the necessary targets to manage a single VM.
   - [x] Configure/determine how to manage multiple machines.
   - [x] Check your work into your repository.
