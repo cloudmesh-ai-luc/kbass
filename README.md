@@ -27,18 +27,18 @@
   - [x] Check your work into your repository.
   - [x] [Chameleon Cloud Report](assignments/week4/chameleon/week4-chameleon.md)
 
-- [ ] Assignment W4.4: Review Python
-  - [ ] Set up a Python virtual environment (using venv or pyenv; avoid conda/miniconda unless strictly justified).
-  - [ ] Ensure the OpenStack command-line tool is installed via pipx.
-  - [ ] Review using pip install and pipx install.
-  - [ ] Review import statements and os.system (write a program using os.system("ls")).
-  - [ ] Review how to create a __main__ block.
-  - [ ] Review how to write a function.
-  - [ ] Review how to pass command-line arguments to a Python program (using click).
-  - [ ] Review how to run shell commands from within Python, focusing on os.system() and subprocess.run().
-  - [ ] Does it take more than 3 hours? Please use Piazza to find out where you may need some more help.
+- [x] Assignment W4.4: Review Python
+  - [x] Set up a Python virtual environment (using venv or pyenv; avoid conda/miniconda unless strictly justified).
+  - [x] Ensure the OpenStack command-line tool is installed via pipx.
+  - [x] Review using pip install and pipx install.
+  - [x] Review import statements and os.system (write a program using os.system("ls")).
+  - [x] Review how to create a __main__ block.
+  - [x] Review how to write a function.
+  - [x] Review how to pass command-line arguments to a Python program (using click).
+  - [x] Review how to run shell commands from within Python, focusing on os.system() and subprocess.run().
+  - [x] Does it take more than 3 hours? Please use Piazza to find out where you may need some more help.
     - [ ] yes
-    - [ ] no
+    - [x] no
         
 ## Week 3
 
