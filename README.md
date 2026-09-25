@@ -1,11 +1,45 @@
 # kbass
+# Khalidou Bass | kbass4@luc.edu #
 
 *  Accounts: https://github.com/cloudmesh-ai-luc/kbass
 
-Note:
-*  put files in `<repor>/assignments/week3/`
-*  Update all YOURREPO
+## Week 4 Tasks (Due Sep 24, 2026, 9am)
 
+- [x] Assignment W4.1: VM on local machine via Makefile
+  - [x] Pick a local VM framework and ensure it is installed.
+  - [x] Write a Makefile with all the necessary targets to manage a single VM.
+  - [x] Configure/determine how to manage multiple machines.
+  - [x] Organize different Makefiles for different local and cloud environments using directories.
+  - [x] [Local VM Report](assignments/week4/local/week4-local.md)
+
+- [x] Assignment W4.2: VM on Jetstream 2
+  - [x] Install the OpenStack command-line client.
+  - [x] Write a Makefile with all the necessary targets to manage a single VM.
+  - [x] Configure/determine how to manage multiple machines.
+  - [x] Check your work into your repository.
+  - [x] [Jetstream 2 Report](assignments/week4/jetstream/week4-jetstream.md)
+
+- [x] Assignment W4.3: VM on Chameleon Cloud
+  - [x] Install the OpenStack command-line client.
+  - [x] Install python-chi.
+  - [x] Write a Makefile with all the necessary targets to manage a single VM.
+  - [x] Configure/determine how to manage multiple machines.
+  - [x] Check your work into your repository.
+  - [x] [Chameleon Cloud Report](assignments/week4/chameleon/week4-chameleon.md)
+
+- [x] Assignment W4.4: Review Python
+  - [x] Set up a Python virtual environment (using venv or pyenv; avoid conda/miniconda unless strictly justified).
+  - [x] Ensure the OpenStack command-line tool is installed via pipx.
+  - [x] Review using pip install and pipx install.
+  - [x] Review import statements and os.system (write a program using os.system("ls")).
+  - [x] Review how to create a __main__ block.
+  - [x] Review how to write a function.
+  - [x] Review how to pass command-line arguments to a Python program (using click).
+  - [x] Review how to run shell commands from within Python, focusing on os.system() and subprocess.run().
+  - [x] Does it take more than 3 hours? Please use Piazza to find out where you may need some more help.
+    - [ ] yes
+    - [x] no
+        
 ## Week 3
 
 * [x] Assignment W3.1: VM on Jetstream (Due Sep 17, 2026, 9am)
@@ -31,16 +65,16 @@ Note:
   * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass4/blob/main/assignments/week3/vm.md)
 
 
-* [ ] Assignment W3.4: Compare (Due Sep 17, 2026, 9am)
-  * [ ] Compare your experience between starting a VM on your local machine vs using Chameleon Cloud.
-  * [ ] Put all assignment answers into `<repor>/assignments/week3.md`. [LINK]
-  * [ ] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3.md)
+* [x] Assignment W3.4: Compare (Due Sep 17, 2026, 9am)
+  * [x] Compare your experience between starting a VM on your local machine vs using Chameleon Cloud.
+  * [x] Put all assignment answers into `<repor>/assignments/week3.md`. [LINK]
+  * [x] [VM.MD](https://github.com/cloudmesh-ai-luc/kbass/blob/main/assignments/week3.md)
      
-* [ ] Assignment W3.5: README.md (Due Sep 17, 2026, 9am)
-  * [ ] put your link here  [LINK]
+* [x] Assignment W3.5: README.md (Due Sep 17, 2026, 9am)
+  * [x] put your link here  [LINK](https://github.com/cloudmesh-ai-luc/kbass/edit/main/README.md)
      
- * [ ] Assignment W3.6 git from commandline
-   * [ ] put the url of a pull request here
+ * [x] Assignment W3.6 git from commandline
+   * [x] put the url of a pull request here: https://github.com/cloudmesh-ai-luc/kbass/pull/11
 
 ## Week 2
   
