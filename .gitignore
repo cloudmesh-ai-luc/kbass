@@ -222,3 +222,5 @@ __marimo__/
 *.key
 id_rsa
 id_ed25519
+# macOS
+.DS_Store
