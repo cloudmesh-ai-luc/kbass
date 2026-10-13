@@ -1,5 +1,5 @@
 
-# Project Proposal
+# Intermediate Project Report
 
 ## AI-Assisted Cloud Monitoring and Troubleshooting Dashboard
 
@@ -7,7 +7,7 @@
 **Course:** COMP 488 – Cloud Computing, DevOps, and AI  
 **Instructor:** Gregor von Laszewski  
 **Date:** October 2026
-**Status:** Approved Project – Proposed Scope Extension
+**Status:** In Progress – Core Monitoring Implemented
 
 ## 1. Project Overview
 
@@ -19,9 +19,9 @@ As an extension, the project will explore **CloudOps Companion**, a cross-platfo
 
 The primary objective remains to build a reliable end-to-end cloud monitoring and troubleshooting prototype.
 
-## 2. Proposed System
+## 2. System Overview and Implementation
 
-The system will follow this workflow:
+The system follows a phased implementation approach. The core monitoring pipeline is operational, while AI-assisted troubleshooting, cloud deployment, and mobile integration remain planned extensions:
 
 1. **Application Deployment:** Deploy a containerized Python/Flask web application locally and to selected cloud environments.
 2. **Monitoring and Metrics Collection:** Collect application performance metrics, availability information, and relevant operational data.
@@ -31,11 +31,11 @@ The system will follow this workflow:
 6. **Mobile Incident Monitoring:** Extend the system through a Flutter mobile application for remote incident notifications and monitoring.
 7. **Administrator-Approved Remediation (Optional):** Explore secure, predefined corrective actions that administrators can explicitly approve.
 
-### Proposed System Architecture
+### Target System Architecture
 
-![Proposed System Architecture](../images/project-overview.png)
+![Target System Architecture](images/project-overview.png)
 
-The proposed architecture consists of:
+The target architecture consists of:
 
 - **Application Layer:** A containerized Flask application exposing health information and monitoring metrics.
 - **Monitoring Layer:** Prometheus for metrics collection and alert evaluation.
@@ -55,13 +55,13 @@ The project is expected to use:
 |---|---|
 | **Python / Flask** | Web application, backend services, and REST APIs |
 | **Docker / Docker Compose** | Containerization and local service orchestration |
-| **Chameleon Cloud / OpenStack** | Proposed research-cloud deployment |
-| **AWS** | Proposed public-cloud deployment and comparison |
+| **Chameleon Cloud / OpenStack** | Planned research-cloud deployment |
+| **AWS** | Planned public-cloud deployment and comparison |
 | **Prometheus** | Metrics collection, monitoring, and incident detection |
 | **Grafana** | Monitoring dashboards and visualization |
 | **LLM / AI Integration** | Incident analysis and troubleshooting recommendations |
 | **Flutter / Dart** | Cross-platform mobile companion application |
-| **Firebase Cloud Messaging** | Proposed mobile push notification delivery |
+| **Firebase Cloud Messaging** | Planned mobile push notification delivery |
 | **GitHub / GitHub Actions / Makefile** | Version control, automation, testing, and deployment workflows |
 
 The final cloud deployment environments, AI integration, and mobile notification mechanism will be selected based on project requirements, available resources, and implementation feasibility.
@@ -176,6 +176,6 @@ This project aims to demonstrate how cloud computing, DevOps monitoring, and AI-
 
 By combining a containerized application, Prometheus, Grafana, cloud infrastructure, and AI-generated recommendations, the project will provide an end-to-end demonstration of application monitoring and incident response.
 
-The proposed **CloudOps Companion** extension will further explore how administrators can receive notifications and respond to operational issues remotely through a Flutter mobile application.
+The planned **CloudOps Companion** extension will further explore how administrators can receive notifications and respond to operational issues remotely through a Flutter mobile application.
 
 Together, these components will illustrate a practical approach to improving cloud application visibility, incident understanding, and operational responsiveness.
