@@ -7,7 +7,7 @@
 **Course:** COMP 488 – Cloud Computing, DevOps, and AI  
 **Instructor:** Gregor von Laszewski  
 **Date:** October 2026
-**Status:** In Progress – Core Monitoring Implemented
+**Status:** In Progress – Monitoring and Rule-Based Troubleshooting Implemented
 
 ## 1. Project Overview
 
@@ -21,7 +21,7 @@ The primary objective remains to build a reliable end-to-end cloud monitoring an
 
 ## 2. System Overview and Implementation
 
-The system follows a phased implementation approach. The core monitoring pipeline is operational, while AI-assisted troubleshooting, cloud deployment, and mobile integration remain planned extensions:
+The system follows a phased implementation approach. The core monitoring pipeline, incident API, and rule-based troubleshooting are implemented. LLM-assisted analysis, performance evaluation, and cloud deployment remain planned:
 
 1. **Application Deployment:** Deploy a containerized Python/Flask web application locally and to selected cloud environments.
 2. **Monitoring and Metrics Collection:** Collect application performance metrics, availability information, and relevant operational data.
@@ -40,7 +40,7 @@ The target architecture consists of:
 - **Application Layer:** A containerized Flask application exposing health information and monitoring metrics.
 - **Monitoring Layer:** Prometheus for metrics collection and alert evaluation.
 - **Visualization Layer:** Grafana for monitoring dashboards and performance visualization.
-- **AI Analysis Layer:** An AI component for incident explanations and troubleshooting recommendations.
+- **Troubleshooting Layer:** Implemented rule-based incident explanations and recommendations, with secure LLM-assisted analysis planned.
 - **Backend API Layer:** Flask-based REST APIs for providing incident information to client applications.
 - **Mobile Layer:** CloudOps Companion, a Flutter application for remote monitoring and notifications.
 - **Cloud Infrastructure Layer:** Local Docker deployment and selected cloud environments for deployment and evaluation.
@@ -55,6 +55,7 @@ The project is expected to use:
 |---|---|
 | **Python / Flask** | Web application, backend services, and REST APIs |
 | **Docker / Docker Compose** | Containerization and local service orchestration |
+| **OrbStack** | Optional alternative to Docker Desktop for evaluation |
 | **Chameleon Cloud / OpenStack** | Planned research-cloud deployment |
 | **AWS** | Planned public-cloud deployment and comparison |
 | **Prometheus** | Metrics collection, monitoring, and incident detection |
@@ -75,7 +76,7 @@ The main objectives are to:
 3. Collect and visualize application health and performance metrics.
 4. Detect selected operational incidents using monitoring rules.
 5. Integrate AI to explain incidents and recommend troubleshooting actions.
-6. Evaluate monitoring behavior and compare selected deployment characteristics.
+6. Evaluate monitoring behavior, failure-detection latency, and incident-analysis performance.
 7. Demonstrate an end-to-end monitoring and troubleshooting workflow.
 
 ### Extended Objectives
@@ -100,7 +101,8 @@ The expected outcome is a working prototype demonstrating how cloud monitoring a
 - Grafana monitoring dashboards.
 - Detection and simulation of selected application incidents.
 - AI-generated incident explanations and troubleshooting recommendations.
-- Basic deployment and monitoring evaluation.
+- Monitoring evaluation, including alert validation and timing measurements.
+- Recorded experimental results for comparing monitoring and troubleshooting performance.
 - Source code, documentation, and a final project demonstration.
 
 The primary workflow will be:
@@ -134,7 +136,8 @@ The implementation will focus on:
 - Incident detection and alerting.
 - AI-assisted incident explanation.
 - Troubleshooting recommendations.
-- Basic automation, evaluation, and documentation.
+- Basic automation, performance evaluation, and documentation.
+- Security considerations for logs, incident data, and local versus hosted LLMs.
 
 ### Extended Scope: CloudOps Companion
 
@@ -162,11 +165,12 @@ The project will be developed incrementally during the remainder of the semester
 |---|---|
 | **Phase 1: Application Development** | Develop and containerize the Flask application |
 | **Phase 2: Monitoring and Visualization** | Integrate Prometheus and Grafana |
-| **Phase 3: Incident Detection** | Configure and test monitoring alerts |
-| **Phase 4: AI-Assisted Troubleshooting** | Develop incident analysis and recommendation functionality |
-| **Phase 5: Cloud Deployment and Evaluation** | Deploy to selected cloud environments and evaluate monitoring behavior |
-| **Phase 6: Mobile Extension** | Develop a Flutter prototype for incident notifications and remote monitoring, subject to time |
-| **Phase 7: Integration and Demonstration** | Complete testing, documentation, and the final demonstration |
+| **Phase 3: Incident Detection** | Validate alert firing and incident detection; incident API and rule-based troubleshooting implemented |
+| **Phase 4: Performance Evaluation** | Measure detection latency, alert timing, and API response times; record experimental results |
+| **Phase 5: Secure AI-Assisted Troubleshooting** | Integrate an LLM, protect sensitive incident data, and evaluate recommendations |
+| **Phase 6: Cloud Deployment and Evaluation** | Deploy the monitoring system to at least one cloud environment (Chameleon Cloud/OpenStack or AWS), validate its operation, and evaluate deployment characteristics; Lima is not required |
+| **Phase 7: Optional Mobile Extension** | Develop a Flutter prototype for incident notifications and remote monitoring, subject to time |
+| **Phase 8: Integration and Demonstration** | Complete testing, documentation, performance evaluation, and the final demonstration |
 
 The core monitoring and AI-assisted troubleshooting functionality will take priority. The mobile extension will be developed incrementally without compromising the primary project objectives.
 
