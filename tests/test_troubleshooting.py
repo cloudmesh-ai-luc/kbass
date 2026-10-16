@@ -4,9 +4,8 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 
-from troubleshooting import analyze_incident
+from kbass_monitoring.troubleshooting import analyze_incident
 
 
 class TestTroubleshooting(unittest.TestCase):

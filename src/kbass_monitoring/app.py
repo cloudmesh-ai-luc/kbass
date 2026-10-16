@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from flask import Flask, Response, jsonify, request
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
 
-from troubleshooting import analyze_incident
+from .troubleshooting import analyze_incident
 
 app = Flask(__name__)
 

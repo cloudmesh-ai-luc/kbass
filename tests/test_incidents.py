@@ -6,9 +6,8 @@ from pathlib import Path
 from unittest.mock import patch
 from urllib.error import URLError
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 
-from app import app
+from kbass_monitoring.app import app
 
 
 class TestIncidentAPI(unittest.TestCase):
@@ -17,7 +16,7 @@ class TestIncidentAPI(unittest.TestCase):
         self.client = app.test_client()
 
     def test_no_active_alerts(self):
-        with patch("app.fetch_prometheus_alerts", return_value=[]):
+        with patch("kbass_monitoring.app.fetch_prometheus_alerts", return_value=[]):
             response = self.client.get("/api/incidents")
 
         self.assertEqual(response.status_code, 200)
@@ -41,7 +40,7 @@ class TestIncidentAPI(unittest.TestCase):
             "value": "0e+00",
         }
 
-        with patch("app.fetch_prometheus_alerts", return_value=[alert]):
+        with patch("kbass_monitoring.app.fetch_prometheus_alerts", return_value=[alert]):
             response = self.client.get("/api/incidents")
 
         self.assertEqual(response.status_code, 200)
@@ -75,7 +74,7 @@ class TestIncidentAPI(unittest.TestCase):
             "value": "0.12",
         }
 
-        with patch("app.fetch_prometheus_alerts", return_value=[alert]):
+        with patch("kbass_monitoring.app.fetch_prometheus_alerts", return_value=[alert]):
             response = self.client.get("/api/incidents")
 
         self.assertEqual(response.status_code, 200)
@@ -96,7 +95,7 @@ class TestIncidentAPI(unittest.TestCase):
             "state": "firing",
         }
 
-        with patch("app.fetch_prometheus_alerts", return_value=[alert]):
+        with patch("kbass_monitoring.app.fetch_prometheus_alerts", return_value=[alert]):
             response = self.client.get("/api/incidents")
 
         self.assertEqual(response.status_code, 200)
@@ -108,7 +107,7 @@ class TestIncidentAPI(unittest.TestCase):
 
     def test_prometheus_unavailable(self):
         with patch(
-            "app.fetch_prometheus_alerts",
+            "kbass_monitoring.app.fetch_prometheus_alerts",
             side_effect=URLError("Connection refused"),
         ):
             response = self.client.get("/api/incidents")
