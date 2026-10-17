@@ -174,7 +174,47 @@ The project will be developed incrementally during the remainder of the semester
 
 The core monitoring and AI-assisted troubleshooting functionality will take priority. The mobile extension will be developed incrementally without compromising the primary project objectives.
 
-## 8. Conclusion
+## 8. Monitoring and Alert Validation
+
+The monitoring system was tested locally using Docker Compose, Prometheus, and a containerized Flask application. Two controlled experiments validated incident detection and alert recovery.
+
+### 8.1 Application Downtime
+
+The Flask container was stopped while Prometheus and Grafana remained running.
+
+- **Alert:** `ApplicationDown`
+- **Condition:** `up{job="flask-app"} == 0` for 15 seconds
+- **Observed behavior:** Prometheus reported the alert as `pending`, then `firing`.
+- **Recovery:** After restarting Flask, Prometheus cleared the alert.
+- **Result:** Detection and recovery verified.
+
+### 8.2 High HTTP Error Rate
+
+A temporary, loopback-restricted endpoint generated HTTP 500 responses inside the Flask container. Error simulation was enabled only for the experiment.
+
+- **Alert:** `HighErrorRate`
+- **Condition:** More than 5% HTTP 5xx responses over a one-minute rate window, sustained for 30 seconds
+- **Requests generated:** 481
+- **HTTP 500 responses:** 481
+- **Test duration:** 100.2 seconds
+- **Observed Prometheus error ratio:** Approximately 93.68%
+- **Observed alert state:** `firing`
+- **Recovery:** After restoring the normal container configuration, Prometheus reported no active alerts.
+- **Result:** Detection and recovery verified.
+
+The simulation endpoint was confirmed to return HTTP 404 after the experiment, including for requests originating inside the container.
+
+### 8.3 Automated Testing
+
+The project test suite completed successfully with **11 tests passed** and no failures.
+
+### 8.4 Limitations and Next Steps
+
+These experiments validate alert firing and resolution in the local environment. Exact failure-detection latency, recovery latency, API response times, and performance under different workloads have not yet been measured.
+
+Future evaluation will include timestamped measurements, performance comparisons, cloud deployment, and secure LLM-assisted troubleshooting. The current troubleshooting implementation is rule-based; LLM integration remains planned.
+
+## 9. Conclusion
 
 This project aims to demonstrate how cloud computing, DevOps monitoring, and AI-assisted troubleshooting can be integrated into a practical system for detecting and understanding application incidents.
 

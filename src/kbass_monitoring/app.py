@@ -111,10 +111,22 @@ def health():
     )
 
 
+@app.route("/test/error")
+def simulate_error():
+    """Generate a controlled HTTP 500 response for monitoring tests."""
+    if (
+        os.environ.get("ENABLE_ERROR_SIMULATION") != "true"
+        or request.remote_addr not in ("127.0.0.1", "::1")
+    ):
+        return jsonify({"error": "Not found"}), 404
+
+    return jsonify({"error": "Simulated server failure"}), 500
+
+
 @app.route("/metrics")
 def metrics():
     return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=False)
