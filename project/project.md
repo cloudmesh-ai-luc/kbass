@@ -210,11 +210,76 @@ The project test suite completed successfully with **11 tests passed** and no fa
 
 ### 8.4 Limitations and Next Steps
 
-These experiments validate alert firing and resolution in the local environment. Exact failure-detection latency, recovery latency, API response times, and performance under different workloads have not yet been measured.
+These experiments validate alert firing and resolution in the local environment. Exact failure-detection and recovery latencies have not yet been measured. API response times and workload performance have now been evaluated separately in Section 9.
 
-Future evaluation will include timestamped measurements, performance comparisons, cloud deployment, and secure LLM-assisted troubleshooting. The current troubleshooting implementation is rule-based; LLM integration remains planned.
+Future evaluation will include timestamped alert measurements, additional performance comparisons, cloud deployment, and secure LLM-assisted troubleshooting. The current troubleshooting implementation is rule-based; LLM integration remains planned.
 
-## 9. Conclusion
+## 9. Performance Evaluation
+
+The containerized Flask application was benchmarked locally to evaluate
+HTTP response latency, throughput, and reliability under different workloads.
+
+A reusable Python benchmarking script was developed to send sequential
+and concurrent requests to the `/health` endpoint and record response times.
+
+### 9.1 Baseline and Concurrent Load Testing
+
+| Metric | Sequential Baseline | Concurrent Baseline | Larger Load |
+|---|---:|---:|---:|
+| Requests | 100 | 100 | 1,000 |
+| Concurrent workers | 1 | 10 | 10 |
+| Successful requests | 100 | 100 | 1,000 |
+| Failed requests | 0 | 0 | 0 |
+| Average latency | 3.35 ms | 9.95 ms | 7.47 ms |
+| P95 latency | 5.29 ms | 34.77 ms | 10.28 ms |
+| Throughput | 297.26 req/s | 969.02 req/s | 1,330.52 req/s |
+
+Concurrent requests increased observed throughput compared with the
+sequential baseline, although individual response times also increased.
+
+### 9.2 Sustained Load Testing
+
+A longer experiment repeatedly executed batches of 1,000 HTTP requests
+using 10 concurrent workers for approximately 31 seconds.
+
+| Metric | Result |
+|---|---:|
+| Duration | 31.00 seconds |
+| Total requests | 29,000 |
+| Successful requests | 29,000 |
+| Failed requests | 0 |
+| Overall throughput | 935.61 req/s |
+| Average latency | 9.75 ms |
+| Median latency | 7.88 ms |
+| P95 latency | 17.61 ms |
+| P99 latency | 26.67 ms |
+| Maximum latency | 46.90 ms |
+
+All 29,000 requests completed successfully during the experiment.
+
+The sustained throughput was lower than the throughput measured during
+the shorter 1,000-request experiment, demonstrating the importance of
+evaluating performance over different test durations.
+
+### 9.3 Limitations and Future Evaluation
+
+These results were obtained using the Flask development server in a
+local Docker Compose environment. The benchmark targeted a lightweight
+health-check endpoint rather than computationally intensive application
+functionality.
+
+The sustained experiment used repeated short batches rather than one
+uninterrupted workload. Consequently, these measurements should not
+be interpreted as production capacity guarantees.
+
+Future work will include longer continuous tests, resource utilization
+measurements, cloud deployment comparisons, and evaluation using a
+production WSGI server.
+
+The reusable benchmarking script, detailed methodology, and complete
+results summary are documented in `benchmarks/README.md`.
+
+## 10. Conclusion
 
 This project aims to demonstrate how cloud computing, DevOps monitoring, and AI-assisted troubleshooting can be integrated into a practical system for detecting and understanding application incidents.
 
