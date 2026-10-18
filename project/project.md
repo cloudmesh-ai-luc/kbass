@@ -208,11 +208,40 @@ The simulation endpoint was confirmed to return HTTP 404 after the experiment, i
 
 The project test suite completed successfully with **11 tests passed** and no failures.
 
-### 8.4 Limitations and Next Steps
+### 8.4 Alert Detection and Recovery Latency
 
-These experiments validate alert firing and resolution in the local environment. Exact failure-detection and recovery latencies have not yet been measured. API response times and workload performance have now been evaluated separately in Section 9.
+Three controlled trials measured how quickly Prometheus detected application downtime and cleared the `ApplicationDown` alert after Flask restarted.
 
-Future evaluation will include timestamped alert measurements, additional performance comparisons, cloud deployment, and secure LLM-assisted troubleshooting. The current troubleshooting implementation is rule-based; LLM integration remains planned.
+The experiment stopped the Flask container using Docker Compose, polled the Prometheus rules API every 0.5 seconds, and restarted the application after observing the alert in the `firing` state.
+
+Prometheus was configured with a 5-second scrape interval, a 5-second evaluation interval, and a 15-second alert duration.
+
+| Metric | Trial 1 | Trial 2 | Trial 3 |
+|---|---:|---:|---:|
+| Detection latency | 26.171 s | 24.147 s | 23.657 s |
+| Recovery latency | 9.795 s | 9.275 s | 9.787 s |
+| Detection from shutdown initiation | 29.545 s | 27.504 s | 27.101 s |
+
+Across the three trials:
+
+- **Mean detection latency:** 24.658 seconds
+- **Mean recovery latency:** 9.619 seconds
+- **Detection latency range:** 23.657–26.171 seconds
+- **Recovery latency range:** 9.275–9.795 seconds
+
+All three experiments completed successfully. Following the third trial, the Flask application returned HTTP 200, and Prometheus reported the alert as inactive and healthy.
+
+These measurements represent client-observed alert transitions. Detection was measured from completion of the Docker stop command, while recovery was measured from completion of the Docker start command. They do not represent exact internal Prometheus event timestamps.
+
+The experiment implementation, methodology, and results are documented in `benchmarks/alert_latency/README.md`.
+
+### 8.5 Limitations and Next Steps
+
+The experiments validate alert firing, resolution, and client-observed detection and recovery latency in the local environment. However, only three latency trials were conducted, and exact internal Prometheus transition times and notification delivery latency remain unmeasured.
+
+API response times and workload performance have been evaluated separately in Section 9.
+
+Future evaluation will include additional alert latency trials, cloud deployment comparisons, and secure LLM-assisted troubleshooting. The current troubleshooting implementation is rule-based; LLM integration remains planned.
 
 ## 9. Performance Evaluation
 
