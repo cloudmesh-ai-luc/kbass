@@ -2,12 +2,11 @@ FROM python:3.14-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY pyproject.toml ./
+COPY src/ ./src/
 
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY app/ ./app/
+RUN pip install --no-cache-dir .
 
 EXPOSE 8000
 
-CMD ["python", "app/app.py"]
+CMD ["python", "-m", "kbass_monitoring.app"]

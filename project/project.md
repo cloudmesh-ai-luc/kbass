@@ -7,7 +7,7 @@
 **Course:** COMP 488 – Cloud Computing, DevOps, and AI  
 **Instructor:** Gregor von Laszewski  
 **Date:** October 2026
-**Status:** In Progress – Core Monitoring Implemented
+**Status:** In Progress – Monitoring and Rule-Based Troubleshooting Implemented
 
 ## 1. Project Overview
 
@@ -21,7 +21,7 @@ The primary objective remains to build a reliable end-to-end cloud monitoring an
 
 ## 2. System Overview and Implementation
 
-The system follows a phased implementation approach. The core monitoring pipeline is operational, while AI-assisted troubleshooting, cloud deployment, and mobile integration remain planned extensions:
+The system follows a phased implementation approach. The core monitoring pipeline, incident API, and rule-based troubleshooting are implemented. LLM-assisted analysis, performance evaluation, and cloud deployment remain planned:
 
 1. **Application Deployment:** Deploy a containerized Python/Flask web application locally and to selected cloud environments.
 2. **Monitoring and Metrics Collection:** Collect application performance metrics, availability information, and relevant operational data.
@@ -40,7 +40,7 @@ The target architecture consists of:
 - **Application Layer:** A containerized Flask application exposing health information and monitoring metrics.
 - **Monitoring Layer:** Prometheus for metrics collection and alert evaluation.
 - **Visualization Layer:** Grafana for monitoring dashboards and performance visualization.
-- **AI Analysis Layer:** An AI component for incident explanations and troubleshooting recommendations.
+- **Troubleshooting Layer:** Implemented rule-based incident explanations and recommendations, with secure LLM-assisted analysis planned.
 - **Backend API Layer:** Flask-based REST APIs for providing incident information to client applications.
 - **Mobile Layer:** CloudOps Companion, a Flutter application for remote monitoring and notifications.
 - **Cloud Infrastructure Layer:** Local Docker deployment and selected cloud environments for deployment and evaluation.
@@ -55,6 +55,7 @@ The project is expected to use:
 |---|---|
 | **Python / Flask** | Web application, backend services, and REST APIs |
 | **Docker / Docker Compose** | Containerization and local service orchestration |
+| **OrbStack** | Optional alternative to Docker Desktop for evaluation |
 | **Chameleon Cloud / OpenStack** | Planned research-cloud deployment |
 | **AWS** | Planned public-cloud deployment and comparison |
 | **Prometheus** | Metrics collection, monitoring, and incident detection |
@@ -75,7 +76,7 @@ The main objectives are to:
 3. Collect and visualize application health and performance metrics.
 4. Detect selected operational incidents using monitoring rules.
 5. Integrate AI to explain incidents and recommend troubleshooting actions.
-6. Evaluate monitoring behavior and compare selected deployment characteristics.
+6. Evaluate monitoring behavior, failure-detection latency, and incident-analysis performance.
 7. Demonstrate an end-to-end monitoring and troubleshooting workflow.
 
 ### Extended Objectives
@@ -100,7 +101,8 @@ The expected outcome is a working prototype demonstrating how cloud monitoring a
 - Grafana monitoring dashboards.
 - Detection and simulation of selected application incidents.
 - AI-generated incident explanations and troubleshooting recommendations.
-- Basic deployment and monitoring evaluation.
+- Monitoring evaluation, including alert validation and timing measurements.
+- Recorded experimental results for comparing monitoring and troubleshooting performance.
 - Source code, documentation, and a final project demonstration.
 
 The primary workflow will be:
@@ -134,7 +136,8 @@ The implementation will focus on:
 - Incident detection and alerting.
 - AI-assisted incident explanation.
 - Troubleshooting recommendations.
-- Basic automation, evaluation, and documentation.
+- Basic automation, performance evaluation, and documentation.
+- Security considerations for logs, incident data, and local versus hosted LLMs.
 
 ### Extended Scope: CloudOps Companion
 
@@ -162,15 +165,150 @@ The project will be developed incrementally during the remainder of the semester
 |---|---|
 | **Phase 1: Application Development** | Develop and containerize the Flask application |
 | **Phase 2: Monitoring and Visualization** | Integrate Prometheus and Grafana |
-| **Phase 3: Incident Detection** | Configure and test monitoring alerts |
-| **Phase 4: AI-Assisted Troubleshooting** | Develop incident analysis and recommendation functionality |
-| **Phase 5: Cloud Deployment and Evaluation** | Deploy to selected cloud environments and evaluate monitoring behavior |
-| **Phase 6: Mobile Extension** | Develop a Flutter prototype for incident notifications and remote monitoring, subject to time |
-| **Phase 7: Integration and Demonstration** | Complete testing, documentation, and the final demonstration |
+| **Phase 3: Incident Detection** | Validate alert firing and incident detection; incident API and rule-based troubleshooting implemented |
+| **Phase 4: Performance Evaluation** | Measure detection latency, alert timing, and API response times; record experimental results |
+| **Phase 5: Secure AI-Assisted Troubleshooting** | Integrate an LLM, protect sensitive incident data, and evaluate recommendations |
+| **Phase 6: Cloud Deployment and Evaluation** | Deploy the monitoring system to at least one cloud environment (Chameleon Cloud/OpenStack or AWS), validate its operation, and evaluate deployment characteristics; Lima is not required |
+| **Phase 7: Optional Mobile Extension** | Develop a Flutter prototype for incident notifications and remote monitoring, subject to time |
+| **Phase 8: Integration and Demonstration** | Complete testing, documentation, performance evaluation, and the final demonstration |
 
 The core monitoring and AI-assisted troubleshooting functionality will take priority. The mobile extension will be developed incrementally without compromising the primary project objectives.
 
-## 8. Conclusion
+## 8. Monitoring and Alert Validation
+
+The monitoring system was tested locally using Docker Compose, Prometheus, and a containerized Flask application. Two controlled experiments validated incident detection and alert recovery.
+
+### 8.1 Application Downtime
+
+The Flask container was stopped while Prometheus and Grafana remained running.
+
+- **Alert:** `ApplicationDown`
+- **Condition:** `up{job="flask-app"} == 0` for 15 seconds
+- **Observed behavior:** Prometheus reported the alert as `pending`, then `firing`.
+- **Recovery:** After restarting Flask, Prometheus cleared the alert.
+- **Result:** Detection and recovery verified.
+
+### 8.2 High HTTP Error Rate
+
+A temporary, loopback-restricted endpoint generated HTTP 500 responses inside the Flask container. Error simulation was enabled only for the experiment.
+
+- **Alert:** `HighErrorRate`
+- **Condition:** More than 5% HTTP 5xx responses over a one-minute rate window, sustained for 30 seconds
+- **Requests generated:** 481
+- **HTTP 500 responses:** 481
+- **Test duration:** 100.2 seconds
+- **Observed Prometheus error ratio:** Approximately 93.68%
+- **Observed alert state:** `firing`
+- **Recovery:** After restoring the normal container configuration, Prometheus reported no active alerts.
+- **Result:** Detection and recovery verified.
+
+The simulation endpoint was confirmed to return HTTP 404 after the experiment, including for requests originating inside the container.
+
+### 8.3 Automated Testing
+
+The project test suite completed successfully with **11 tests passed** and no failures.
+
+### 8.4 Alert Detection and Recovery Latency
+
+Three controlled trials measured how quickly Prometheus detected application downtime and cleared the `ApplicationDown` alert after Flask restarted.
+
+The experiment stopped the Flask container using Docker Compose, polled the Prometheus rules API every 0.5 seconds, and restarted the application after observing the alert in the `firing` state.
+
+Prometheus was configured with a 5-second scrape interval, a 5-second evaluation interval, and a 15-second alert duration.
+
+| Metric | Trial 1 | Trial 2 | Trial 3 |
+|---|---:|---:|---:|
+| Detection latency | 26.171 s | 24.147 s | 23.657 s |
+| Recovery latency | 9.795 s | 9.275 s | 9.787 s |
+| Detection from shutdown initiation | 29.545 s | 27.504 s | 27.101 s |
+
+Across the three trials:
+
+- **Mean detection latency:** 24.658 seconds
+- **Mean recovery latency:** 9.619 seconds
+- **Detection latency range:** 23.657–26.171 seconds
+- **Recovery latency range:** 9.275–9.795 seconds
+
+All three experiments completed successfully. Following the third trial, the Flask application returned HTTP 200, and Prometheus reported the alert as inactive and healthy.
+
+These measurements represent client-observed alert transitions. Detection was measured from completion of the Docker stop command, while recovery was measured from completion of the Docker start command. They do not represent exact internal Prometheus event timestamps.
+
+The experiment implementation, methodology, and results are documented in `benchmarks/alert_latency/README.md`.
+
+### 8.5 Limitations and Next Steps
+
+The experiments validate alert firing, resolution, and client-observed detection and recovery latency in the local environment. However, only three latency trials were conducted, and exact internal Prometheus transition times and notification delivery latency remain unmeasured.
+
+API response times and workload performance have been evaluated separately in Section 9.
+
+Future evaluation will include additional alert latency trials, cloud deployment comparisons, and secure LLM-assisted troubleshooting. The current troubleshooting implementation is rule-based; LLM integration remains planned.
+
+## 9. Performance Evaluation
+
+The containerized Flask application was benchmarked locally to evaluate
+HTTP response latency, throughput, and reliability under different workloads.
+
+A reusable Python benchmarking script was developed to send sequential
+and concurrent requests to the `/health` endpoint and record response times.
+
+### 9.1 Baseline and Concurrent Load Testing
+
+| Metric | Sequential Baseline | Concurrent Baseline | Larger Load |
+|---|---:|---:|---:|
+| Requests | 100 | 100 | 1,000 |
+| Concurrent workers | 1 | 10 | 10 |
+| Successful requests | 100 | 100 | 1,000 |
+| Failed requests | 0 | 0 | 0 |
+| Average latency | 3.35 ms | 9.95 ms | 7.47 ms |
+| P95 latency | 5.29 ms | 34.77 ms | 10.28 ms |
+| Throughput | 297.26 req/s | 969.02 req/s | 1,330.52 req/s |
+
+Concurrent requests increased observed throughput compared with the
+sequential baseline, although individual response times also increased.
+
+### 9.2 Sustained Load Testing
+
+A longer experiment repeatedly executed batches of 1,000 HTTP requests
+using 10 concurrent workers for approximately 31 seconds.
+
+| Metric | Result |
+|---|---:|
+| Duration | 31.00 seconds |
+| Total requests | 29,000 |
+| Successful requests | 29,000 |
+| Failed requests | 0 |
+| Overall throughput | 935.61 req/s |
+| Average latency | 9.75 ms |
+| Median latency | 7.88 ms |
+| P95 latency | 17.61 ms |
+| P99 latency | 26.67 ms |
+| Maximum latency | 46.90 ms |
+
+All 29,000 requests completed successfully during the experiment.
+
+The sustained throughput was lower than the throughput measured during
+the shorter 1,000-request experiment, demonstrating the importance of
+evaluating performance over different test durations.
+
+### 9.3 Limitations and Future Evaluation
+
+These results were obtained using the Flask development server in a
+local Docker Compose environment. The benchmark targeted a lightweight
+health-check endpoint rather than computationally intensive application
+functionality.
+
+The sustained experiment used repeated short batches rather than one
+uninterrupted workload. Consequently, these measurements should not
+be interpreted as production capacity guarantees.
+
+Future work will include longer continuous tests, resource utilization
+measurements, cloud deployment comparisons, and evaluation using a
+production WSGI server.
+
+The reusable benchmarking script, detailed methodology, and complete
+results summary are documented in `benchmarks/README.md`.
+
+## 10. Conclusion
 
 This project aims to demonstrate how cloud computing, DevOps monitoring, and AI-assisted troubleshooting can be integrated into a practical system for detecting and understanding application incidents.
 
