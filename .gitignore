@@ -227,3 +227,12 @@ id_ed25519
 
 # Local development backups
 *.bak
+
+# CloudOps AI persistent application data
+/data/
+
+# Local CloudOps AI authentication secrets
+.env.cloudops
+
+# Runtime-generated Prometheus service discovery targets
+/prometheus/targets/

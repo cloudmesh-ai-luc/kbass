@@ -1,25 +1,32 @@
 groups:
-  - name: flask_application_alerts
+  - name: application_alerts
     rules:
       - alert: ApplicationDown
-        expr: up{job="flask-app"} == 0
+        expr: up{job=~"flask-app|registered-apps"} == 0
         for: 15s
         labels:
           severity: critical
         annotations:
-          summary: "Flask application is down"
-          description: "Prometheus cannot reach the Flask application for at least 15 seconds."
+          summary: "Application {{ $labels.job }} is down"
+          description: "Prometheus cannot scrape {{ $labels.instance }} for at least 15 seconds."
 
       - alert: HighErrorRate
         expr: |
           (
-            sum(rate(app_http_requests_total{status=~"5.."}[1m]))
+            sum by (job, instance) (
+              rate(app_http_requests_total{status=~"5.."}[1m])
+            )
             /
-            clamp_min(sum(rate(app_http_requests_total[1m])), 0.001)
+            clamp_min(
+              sum by (job, instance) (
+                rate(app_http_requests_total[1m])
+              ),
+              0.001
+            )
           ) > 0.05
         for: 30s
         labels:
           severity: warning
         annotations:
-          summary: "High HTTP server error rate"
-          description: "More than 5% of HTTP requests have returned 5xx errors for at least 30 seconds."
+          summary: "High HTTP error rate for {{ $labels.instance }}"
+          description: "More than 5% of requests returned 5xx errors over the last minute."

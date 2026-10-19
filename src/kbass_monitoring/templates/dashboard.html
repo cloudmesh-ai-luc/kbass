@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudOps AI | Monitoring Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-icon">◈</span>
+                <span>CloudOps <strong>AI</strong></span>
+            </div>
+
+            <nav class="navigation" aria-label="Main navigation">
+                <a href="#overview" class="nav-link active">Overview</a>
+                <a href="#applications" class="nav-link">Applications</a>
+                <a href="#incidents" class="nav-link">Incidents</a>
+                <a href="#troubleshooting" class="nav-link">AI Troubleshooting</a>
+                <a href="#analytics" class="nav-link">Analytics</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span class="status-dot"></span>
+                <span>Monitoring Dashboard</span>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Infrastructure monitoring</p>
+                    <h1>System Overview</h1>
+                    <p class="subtitle">Monitor services, investigate incidents, and analyze system health.</p>
+                </div>
+                <div class="header-actions">
+                    <span id="last-updated">Not updated yet</span>
+                    <button id="refresh-button" type="button">Refresh</button>
+                </div>
+            </header>
+
+            <section id="overview" class="dashboard-section">
+                <div class="section-heading">
+                    <h2>Monitoring Overview</h2>
+                    <span class="section-description">Current application status</span>
+                </div>
+
+                <div class="metrics-grid">
+                    <article class="metric-card">
+                        <span class="metric-label">Application Health</span>
+                        <strong id="health-status">Checking...</strong>
+                        <span class="metric-description">Flask service availability</span>
+                    </article>
+
+                    <article class="metric-card">
+                        <span class="metric-label">Active Incidents</span>
+                        <strong id="incident-count">--</strong>
+                        <span class="metric-description">Pending and firing alerts</span>
+                    </article>
+
+                    <article class="metric-card">
+                        <span class="metric-label">Critical Incidents</span>
+                        <strong id="critical-count">--</strong>
+                        <span class="metric-description">Critical severity alerts</span>
+                    </article>
+
+                    <article class="metric-card">
+                        <span class="metric-label">Monitoring Source</span>
+                        <strong id="monitoring-status">Checking...</strong>
+                        <span class="metric-description">Prometheus connectivity</span>
+                    </article>
+                </div>
+            </section>
+
+            <section id="applications" class="dashboard-section panel">
+                <div class="section-heading">
+                    <div>
+                        <h2>Monitored Applications</h2>
+                        <p class="section-description">
+                            Manage services across local, AWS, and Chameleon environments.
+                        </p>
+                    </div>
+                    <span id="application-count" class="section-description">
+                        Loading applications...
+                    </span>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Application</th>
+                                <th>Environment</th>
+                                <th>Registration</th>
+                            </tr>
+                        </thead>
+                        <tbody id="application-table">
+                            <tr>
+                                <td colspan="3" class="empty-state">
+                                    Loading registered applications...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="application-registration">
+                    <div class="admin-login">
+                        <h3>Administrator Access</h3>
+                        <p class="section-description">
+                            Sign in to manage registered applications.
+                        </p>
+
+                        <form id="admin-login-form" autocomplete="off">
+                            <label for="admin-token">
+                                Administrator Token
+                            </label>
+                            <input
+                                id="admin-token"
+                                name="token"
+                                type="password"
+                                placeholder="Enter administrator token"
+                                autocomplete="off"
+                                required
+                            >
+                            <button type="submit" id="admin-login-button">
+                                Sign In
+                            </button>
+                        </form>
+
+                        <p
+                            id="application-registration-status"
+                            class="section-description"
+                            role="status"
+                            aria-live="polite"
+                        ></p>
+
+                        <button
+                            type="button"
+                            id="admin-logout-button"
+                            hidden
+                        >
+                            Sign Out
+                        </button>
+
+                        <p
+                            id="admin-auth-status"
+                            class="section-description"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            Sign in to enable application registration.
+                        </p>
+                    </div>
+
+                    <h3>Register an Application</h3>
+                    <p class="section-description">
+                        Registration through the dashboard will be enabled
+                        after secure management authentication is configured.
+                    </p>
+
+                    <form id="application-form">
+                        <div class="application-form-grid">
+                            <label>
+                                Application Name
+                                <input name="name" type="text"
+                                       placeholder="Inventory API"
+                                       maxlength="100" required disabled>
+                            </label>
+
+                            <label>
+                                Environment
+                                <select name="environment" required disabled>
+                                    <option value="local">Local</option>
+                                    <option value="aws">AWS</option>
+                                    <option value="chameleon">Chameleon</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Health URL
+                                <input name="health_url" type="url"
+                                       placeholder="https://example.com/health"
+                                       required disabled>
+                            </label>
+
+                            <label>
+                                Metrics URL
+                                <input name="metrics_url" type="url"
+                                       placeholder="https://example.com/metrics"
+                                       disabled>
+                            </label>
+                        </div>
+
+                        <button type="submit" disabled>
+                            Registration Coming Soon
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="incidents" class="dashboard-section panel">
+                <div class="section-heading">
+                    <div>
+                        <h2>Recent & Active Incidents</h2>
+                        <p class="section-description">Alerts reported by Prometheus</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Alert</th>
+                                <th>Severity</th>
+                                <th>State</th>
+                                <th>Summary</th>
+                                <th>Detected</th>
+                            </tr>
+                        </thead>
+                        <tbody id="incident-table">
+                            <tr>
+                                <td colspan="5" class="empty-state">Loading incidents...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="troubleshooting" class="dashboard-section panel">
+                <div class="section-heading">
+                    <h2>AI-Assisted Troubleshooting</h2>
+                </div>
+                <p class="section-description">
+                    Rule-based incident analysis is available through the incident API.
+                    LLM-powered explanations and interactive troubleshooting will be added next.
+                </p>
+            </section>
+
+            <section id="analytics" class="dashboard-section panel">
+                <div class="section-heading">
+                    <h2>Performance Analytics</h2>
+                </div>
+                <p class="section-description">
+                    Interactive metrics, performance trends, and cloud comparisons will appear here.
+                </p>
+            </section>
+
+            <footer class="footer">
+                COMP 488 — AI-Assisted Cloud Monitoring & Troubleshooting Dashboard
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
