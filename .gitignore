@@ -216,3 +216,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Ignore SSH private key files
+*.pem
+*.key
+id_rsa
+id_ed25519
+# macOS
+.DS_Store
+
+# Local development backups
+*.bak

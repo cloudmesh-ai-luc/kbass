@@ -1,0 +1,112 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Total HTTP Requests",
+      "id": 1,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "targets": [
+        {
+          "expr": "sum(app_http_requests_total)",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Successful Requests",
+      "id": 2,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "targets": [
+        {
+          "expr": "sum(app_http_requests_total{status=\"200\"})",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Application Up",
+      "id": 3,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"flask-app\"}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP Request Rate",
+      "id": 4,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "targets": [
+        {
+          "expr": "sum by (endpoint) (rate(app_http_requests_total[1m]))",
+          "legendFormat": "{{endpoint}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      }
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 41,
+  "tags": [
+    "COMP488",
+    "Flask",
+    "Prometheus"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "AI-Assisted Cloud Monitoring Dashboard",
+  "uid": "kbass-app-monitoring",
+  "version": 1
+}
