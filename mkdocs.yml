@@ -1,0 +1,6 @@
+site_name: kbass Monitoring Documentation
+theme: readthedocs
+
+nav:
+  - Home: index.md
+  - Feedback: instructor_feedback_2026-10-15.md
