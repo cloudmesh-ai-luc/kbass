@@ -8,11 +8,17 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
 
-from .troubleshooting import analyze_incident
+from .hybrid_troubleshooting import analyze_incident_hybrid
+from .diagnosis_cache import DiagnosisCache
+from .ai_budget import InferenceBudget
 from .registry import add_application, list_applications
 from .auth import require_management_token
 
 app = Flask(__name__)
+
+# Shared in-memory AI diagnosis cache for this application process.
+diagnosis_cache = DiagnosisCache(ttl_seconds=900, max_entries=100)
+inference_budget = InferenceBudget(max_requests=10, window_seconds=60)
 
 # Browser management sessions are disabled until a secret is configured.
 app.config.update(
@@ -105,7 +111,16 @@ def get_incidents():
             "labels": labels,
         }
 
-        incident["analysis"] = analyze_incident(incident)
+        ai_enabled = os.environ.get(
+            "CLOUDOPS_AI_ENABLED", "false"
+        ).lower() == "true"
+
+        incident["analysis"] = analyze_incident_hybrid(
+            incident,
+            ai_analyzer="configured" if ai_enabled else None,
+            cache=diagnosis_cache if ai_enabled else None,
+            budget=inference_budget if ai_enabled else None,
+        )
         incidents.append(incident)
 
     return jsonify({

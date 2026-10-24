@@ -48,6 +48,76 @@ function createCell(value, className = "") {
     return cell;
 }
 
+let selectedIncidentKey = null;
+
+function incidentKey(incident) {
+    return JSON.stringify([
+        incident.name,
+        incident.active_at,
+        incident.labels || {},
+    ]);
+}
+
+function renderTroubleshooting(incident) {
+    const container = document.getElementById("troubleshooting-details");
+    if (!container) return;
+
+    container.replaceChildren();
+
+    if (!incident) {
+        const message = document.createElement("p");
+        message.className = "section-description";
+        message.textContent = "Select an incident to view troubleshooting guidance.";
+        container.appendChild(message);
+        return;
+    }
+
+    const analysis = incident.analysis || {};
+
+    const heading = document.createElement("h3");
+    heading.textContent = incident.name || "Unknown incident";
+    container.appendChild(heading);
+
+    const source = document.createElement("p");
+    source.textContent = analysis.diagnosis_type === "ai_assisted"
+        ? "Diagnosis source: AI-assisted"
+        : "Diagnosis source: Rule-based";
+    container.appendChild(source);
+
+    function addSection(title, content) {
+        const sectionHeading = document.createElement("h4");
+        sectionHeading.textContent = title;
+        container.appendChild(sectionHeading);
+
+        if (Array.isArray(content)) {
+            const list = document.createElement("ul");
+
+            for (const item of content) {
+                const listItem = document.createElement("li");
+                listItem.textContent = item;
+                list.appendChild(listItem);
+            }
+
+            container.appendChild(list);
+        } else {
+            const paragraph = document.createElement("p");
+            paragraph.textContent = content || "No information available.";
+            container.appendChild(paragraph);
+        }
+    }
+
+    addSection("Explanation", analysis.explanation);
+    addSection("Possible causes", analysis.possible_causes);
+    addSection("Recommended actions", analysis.recommended_actions);
+
+    const verification = document.createElement("p");
+    verification.className = "section-description";
+    verification.textContent = analysis.root_cause_confirmed === true
+        ? "Root cause confirmed"
+        : "Root cause not yet confirmed";
+    container.appendChild(verification);
+}
+
 function renderIncidents(incidents) {
     const tbody = document.getElementById("incident-table");
     tbody.replaceChildren();
@@ -55,7 +125,7 @@ function renderIncidents(incidents) {
     if (incidents.length === 0) {
         const row = document.createElement("tr");
         const cell = createCell("No active or pending incidents.");
-        cell.colSpan = 5;
+        cell.colSpan = 6;
         cell.className = "empty-state";
         row.appendChild(cell);
         tbody.appendChild(row);
@@ -85,7 +155,30 @@ function renderIncidents(incidents) {
             createCell(detected),
         );
 
+        const actionCell = document.createElement("td");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "View Diagnosis";
+
+        button.addEventListener("click", () => {
+            selectedIncidentKey = incidentKey(incident);
+            renderTroubleshooting(incident);
+        });
+
+        actionCell.appendChild(button);
+        row.appendChild(actionCell);
         tbody.appendChild(row);
+    }
+
+    const selected = incidents.find(
+        incident => incidentKey(incident) === selectedIncidentKey
+    );
+
+    if (selected) {
+        renderTroubleshooting(selected);
+    } else {
+        selectedIncidentKey = null;
+        renderTroubleshooting(null);
     }
 }
 
@@ -114,7 +207,7 @@ async function updateIncidents() {
         const tbody = document.getElementById("incident-table");
         const row = document.createElement("tr");
         const cell = createCell("Unable to retrieve Prometheus incidents.");
-        cell.colSpan = 5;
+        cell.colSpan = 6;
         cell.className = "empty-state";
         row.appendChild(cell);
         tbody.replaceChildren(row);

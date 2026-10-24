@@ -220,11 +220,12 @@
                                 <th>State</th>
                                 <th>Summary</th>
                                 <th>Detected</th>
+                                <th>Diagnosis</th>
                             </tr>
                         </thead>
                         <tbody id="incident-table">
                             <tr>
-                                <td colspan="5" class="empty-state">Loading incidents...</td>
+                                <td colspan="6" class="empty-state">Loading incidents...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -235,10 +236,12 @@
                 <div class="section-heading">
                     <h2>AI-Assisted Troubleshooting</h2>
                 </div>
-                <p class="section-description">
-                    Rule-based incident analysis is available through the incident API.
-                    LLM-powered explanations and interactive troubleshooting will be added next.
-                </p>
+                <div id="troubleshooting-details" aria-live="polite">
+                    <p class="section-description">
+                        Select an incident from the table above to view its
+                        explanation, possible causes, and recommended actions.
+                    </p>
+                </div>
             </section>
 
             <section id="analytics" class="dashboard-section panel">
