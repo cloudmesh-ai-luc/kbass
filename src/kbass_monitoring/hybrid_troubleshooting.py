@@ -1,12 +1,15 @@
 """Hybrid AI-assisted incident troubleshooting with rule-based fallback."""
 
 import json
+import logging
 import os
 from contextlib import nullcontext
 
 from .troubleshooting import analyze_incident
 from .diagnosis_cache import DiagnosisCache
 from .ai_client import analyze_with_ai
+
+logger = logging.getLogger(__name__)
 
 
 def analyze_incident_hybrid(incident, ai_analyzer=None, cache=None, budget=None):
@@ -68,11 +71,13 @@ def analyze_incident_hybrid(incident, ai_analyzer=None, cache=None, budget=None)
 
             # Only actual AI inference attempts consume the budget.
             if budget is not None and not budget.try_acquire():
+                logger.warning("ai_budget_exhausted")
                 return fallback
 
             result = ai_analyzer(incident)
 
             if not isinstance(result, dict):
+                logger.warning("invalid_ai_response")
                 return fallback
 
             required_fields = (
@@ -82,9 +87,11 @@ def analyze_incident_hybrid(incident, ai_analyzer=None, cache=None, budget=None)
             )
 
             if not all(result.get(field) for field in required_fields):
+                logger.warning("invalid_ai_response")
                 return fallback
 
             if not isinstance(result["explanation"], str):
+                logger.warning("invalid_ai_response")
                 return fallback
 
             if not all(
@@ -93,6 +100,7 @@ def analyze_incident_hybrid(incident, ai_analyzer=None, cache=None, budget=None)
                         for item in result[field])
                 for field in ("possible_causes", "recommended_actions")
             ):
+                logger.warning("invalid_ai_response")
                 return fallback
 
             diagnosis = {
@@ -109,4 +117,5 @@ def analyze_incident_hybrid(incident, ai_analyzer=None, cache=None, budget=None)
             return diagnosis
 
     except Exception:
+        logger.warning("ai_inference_failed")
         return fallback
