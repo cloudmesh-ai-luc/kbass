@@ -3,6 +3,42 @@
 
 *  Accounts: https://github.com/cloudmesh-ai-luc/kbass
 
+## October 2026 — Coursework and Cloudmesh Contributions
+
+### Cloudmesh VM Contributions
+
+- [x] Contributed to the `cloudmesh-ai-vm` project.
+- [x] Submitted [PR #53](https://github.com/cloudmesh-ai/cloudmesh-ai-vm/pull/53) addressing Lima provider discovery, SSH configuration, and related CLI behavior.
+- [x] Verified local Multipass VM functionality.
+- [x] Explored Jetstream and Chameleon VM operations using the Cloudmesh CLI.
+- [ ] Confirm final review and merge status of PR #53.
+- [ ] Complete and document any additional required Cloudmesh provider benchmarks.
+
+### Assignment — Project Organization (Due October 29, 2026)
+
+- [x] Organize project Python source code under `src/`.
+- [x] Provide a `pyproject.toml` for Python packaging.
+- [x] Provide a `Makefile` with installation and testing commands.
+- [x] Maintain project documentation under `docs/` and `project/`.
+- [x] Verify editable installation using `make install`.
+- [x] Verify automated testing using `make test`.
+- [ ] Review `cloudmesh-ai-llm-mock` and `cloudmesh-ai-vm` as reference projects.
+- [ ] Evaluate the Jetstream-hosted LLM for possible project improvements, reviewing any generated changes before adoption.
+- [ ] Complete final repository organization and secret-exposure review.
+
+### Assignment — Compromised Jetstream Key (Due October 29, 2026)
+
+- [ ] Prepare a response describing actions to take if a Jetstream SSH key or credential is compromised.
+- [ ] Post the response to the required Piazza discussion.
+
+### Weekly Coursework Documentation
+
+- [x] Update the project implementation report for October 2026.
+- [ ] Review and maintain weekly coursework and Cloudmesh contribution records.
+- [ ] Document benchmark methodology and results for completed Cloudmesh provider operations.
+
+---
+
 ## Week 4 Tasks (Due Sep 24, 2026, 9am)
 
 - [x] Assignment W4.1: VM on local machine via Makefile
