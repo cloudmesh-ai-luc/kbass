@@ -3,11 +3,14 @@
 
 ## AI-Assisted Cloud Monitoring and Troubleshooting Dashboard
 
-**Student:** Khalidou Bass  
-**Course:** COMP 488 – Cloud Computing, DevOps, and AI  
-**Instructor:** Gregor von Laszewski  
+**Student:** Khalidou Bass
+
+**Course:** COMP 488 – Cloud Computing, DevOps, and AI
+
+**Instructor:** Gregor von Laszewski
+
 **Date:** October 2026
-**Status:** In Progress – Monitoring and Rule-Based Troubleshooting Implemented
+**Status:** In Progress – Monitoring, Rule-Based Troubleshooting, and Hybrid AI Integration Implemented
 
 ## 1. Project Overview
 
@@ -21,7 +24,7 @@ The primary objective remains to build a reliable end-to-end cloud monitoring an
 
 ## 2. System Overview and Implementation
 
-The system follows a phased implementation approach. The core monitoring pipeline, incident API, and rule-based troubleshooting are implemented. LLM-assisted analysis, performance evaluation, and cloud deployment remain planned:
+The system follows a phased implementation approach. The core monitoring pipeline, incident API, rule-based troubleshooting, and optional LLM integration are implemented. Local monitoring and performance evaluations have been conducted; live LLM evaluation and cloud deployment remain planned:
 
 1. **Application Deployment:** Deploy a containerized Python/Flask web application locally and to selected cloud environments.
 2. **Monitoring and Metrics Collection:** Collect application performance metrics, availability information, and relevant operational data.
@@ -40,7 +43,7 @@ The target architecture consists of:
 - **Application Layer:** A containerized Flask application exposing health information and monitoring metrics.
 - **Monitoring Layer:** Prometheus for metrics collection and alert evaluation.
 - **Visualization Layer:** Grafana for monitoring dashboards and performance visualization.
-- **Troubleshooting Layer:** Implemented rule-based incident explanations and recommendations, with secure LLM-assisted analysis planned.
+- **Troubleshooting Layer:** Implemented rule-based and optional LLM-assisted incident analysis, supporting OpenAI and Ollama with caching, inference limits, and automatic fallback.
 - **Backend API Layer:** Flask-based REST APIs for providing incident information to client applications.
 - **Mobile Layer:** CloudOps Companion, a Flutter application for remote monitoring and notifications.
 - **Cloud Infrastructure Layer:** Local Docker deployment and selected cloud environments for deployment and evaluation.
@@ -65,7 +68,7 @@ The project is expected to use:
 | **Firebase Cloud Messaging** | Planned mobile push notification delivery |
 | **GitHub / GitHub Actions / Makefile** | Version control, automation, testing, and deployment workflows |
 
-The final cloud deployment environments, AI integration, and mobile notification mechanism will be selected based on project requirements, available resources, and implementation feasibility.
+The AI integration currently supports OpenAI and Ollama. Live model evaluation, final cloud deployment environments, and the mobile notification mechanism remain subject to project requirements, available resources, and implementation feasibility.
 
 ## 4. Project Objectives
 
@@ -167,7 +170,7 @@ The project will be developed incrementally during the remainder of the semester
 | **Phase 2: Monitoring and Visualization** | Integrate Prometheus and Grafana |
 | **Phase 3: Incident Detection** | Validate alert firing and incident detection; incident API and rule-based troubleshooting implemented |
 | **Phase 4: Performance Evaluation** | Measure detection latency, alert timing, and API response times; record experimental results |
-| **Phase 5: Secure AI-Assisted Troubleshooting** | Integrate an LLM, protect sensitive incident data, and evaluate recommendations |
+| **Phase 5: Secure AI-Assisted Troubleshooting** | Hybrid OpenAI/Ollama integration, caching, inference budgeting, and fallback implemented; live inference, privacy review, and recommendation evaluation pending |
 | **Phase 6: Cloud Deployment and Evaluation** | Deploy the monitoring system to at least one cloud environment (Chameleon Cloud/OpenStack or AWS), validate its operation, and evaluate deployment characteristics; Lima is not required |
 | **Phase 7: Optional Mobile Extension** | Develop a Flutter prototype for incident notifications and remote monitoring, subject to time |
 | **Phase 8: Integration and Demonstration** | Complete testing, documentation, performance evaluation, and the final demonstration |
@@ -206,7 +209,7 @@ The simulation endpoint was confirmed to return HTTP 404 after the experiment, i
 
 ### 8.3 Automated Testing
 
-The project test suite completed successfully with **11 tests passed** and no failures.
+An earlier test run completed with **11 tests passed**. The latest verified run on October 24, 2026 completed with **138 tests passed** and no failures.
 
 ### 8.4 Alert Detection and Recovery Latency
 
@@ -241,7 +244,7 @@ The experiments validate alert firing, resolution, and client-observed detection
 
 API response times and workload performance have been evaluated separately in Section 9.
 
-Future evaluation will include additional alert latency trials, cloud deployment comparisons, and secure LLM-assisted troubleshooting. The current troubleshooting implementation is rule-based; LLM integration remains planned.
+Future evaluation will include additional alert latency trials, cloud deployment comparisons, and live LLM-assisted troubleshooting experiments. The current implementation supports rule-based and optional AI-assisted analysis, but successful live inference and diagnostic quality have not yet been established.
 
 ## 9. Performance Evaluation
 
@@ -308,7 +311,68 @@ production WSGI server.
 The reusable benchmarking script, detailed methodology, and complete
 results summary are documented in `benchmarks/README.md`.
 
-## 10. Conclusion
+## 10. Implementation Progress — October 2026
+
+### 10.1 Web Dashboard and Application Management
+
+The Flask application now includes a web dashboard for monitoring and administration. Implemented functionality includes:
+
+- Administrator authentication and session management.
+- Application registration and persistent storage using SQLite.
+- Validation of application endpoints and registration inputs.
+- Prometheus file-based service discovery for registered monitoring targets.
+- Incident information and troubleshooting guidance through the backend API.
+
+### 10.2 Hybrid AI-Assisted Troubleshooting
+
+The backend implements hybrid incident analysis using rule-based troubleshooting and optional LLM-generated recommendations.
+
+Supported AI integrations include:
+
+- OpenAI through its hosted chat-completions API.
+- Ollama through a restricted local endpoint.
+- Structured responses containing an explanation, possible causes, and recommended actions.
+- Automatic rule-based fallback when AI is disabled, unavailable, or returns invalid output.
+
+AI-assisted analysis is disabled by default and requires explicit configuration.
+
+### 10.3 Reliability and Security Safeguards
+
+Implemented safeguards include:
+
+- Restricting AI requests to selected incident fields.
+- Restricting supported AI service endpoints.
+- Treating incident details as untrusted input in the model instructions.
+- Read-only troubleshooting recommendations without automatic remediation.
+- An in-memory diagnosis cache configured for 900 seconds and 100 entries.
+- An in-memory inference budget configured for 10 requests per 60 seconds.
+- Synchronization to reduce duplicate inference for concurrent requests.
+
+These controls reduce operational risks but do not eliminate risks such as sensitive information appearing within incident descriptions or prompt-injection attempts.
+
+### 10.4 Automated Testing and Packaging
+
+On October 24, 2026, the project was verified using:
+
+- `make install`: successful editable installation of `kbass-monitoring==0.1.0`.
+- `make test`: **138 tests passed in 0.41 seconds**.
+
+The test suite covers application management, authentication, monitoring discovery, incident handling, AI client behavior, hybrid troubleshooting, caching, inference budgeting, and validation.
+
+AI client and incident integration tests use mocked provider responses. Consequently, these passing tests do not establish successful live inference against OpenAI or Ollama.
+
+### 10.5 Remaining Evaluation Work
+
+The next development and evaluation activities include:
+
+1. Verify live inference with a configured LLM.
+2. Measure LLM response latency and evaluate diagnostic usefulness.
+3. Document pull-based monitoring limitations and possible event-driven alternatives.
+4. Review safeguards for sensitive incident descriptions and externally hosted models.
+5. Evaluate cloud deployment and additional monitoring benchmarks as time permits.
+6. Consider optional OrbStack and mobile application experiments only after core objectives are satisfied.
+
+## 11. Conclusion
 
 This project aims to demonstrate how cloud computing, DevOps monitoring, and AI-assisted troubleshooting can be integrated into a practical system for detecting and understanding application incidents.
 

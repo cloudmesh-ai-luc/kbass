@@ -1,7 +1,62 @@
-# kbass 
+# kbass
 # Khalidou Bass | kbass4@luc.edu #
 
 *  Accounts: https://github.com/cloudmesh-ai-luc/kbass
+
+## October 2026 — Coursework and Cloudmesh Contributions
+
+### Cloudmesh VM Contributions
+
+- [x] Contributed to the `cloudmesh-ai-vm` project.
+- [x] Submitted [PR #53](https://github.com/cloudmesh-ai/cloudmesh-ai-vm/pull/53) addressing Lima provider discovery, SSH configuration, and related CLI behavior.
+- [x] Verified local Multipass VM functionality.
+- [x] Explored Jetstream and Chameleon VM operations using the Cloudmesh CLI.
+- [ ] Confirm final review and merge status of PR #53.
+- [ ] Complete and document any additional required Cloudmesh provider benchmarks.
+
+### Assignment — Project Organization (Due October 29, 2026)
+
+- [x] Organize project Python source code under `src/`.
+- [x] Provide a `pyproject.toml` for Python packaging.
+- [x] Provide a `Makefile` with installation and testing commands.
+- [x] Maintain project documentation under `docs/` and `project/`.
+- [x] Verify editable installation using `make install`.
+- [x] Verify automated testing using `make test`.
+- [x] Reviewed `cloudmesh-ai-llm-mock` and `cloudmesh-ai-vm` as reference projects.
+- [x] Evaluated the Jetstream-hosted Gemma model using Cline in VS Code; reviewed its recommendations before implementing changes.
+- [x] Complete final repository organization and secret-exposure review.
+
+### Jetstream LLM Evaluation Results
+
+- **Tool:** Cline extension in VS Code.
+- **Model:** `gemma431bit`, accessed through the Jetstream-hosted LLM service.
+- **Method:** Read-only review of the monitoring project's structure, reliability, security, and AI troubleshooting implementation.
+- **Recommendations:** Improve AI response handling, registry initialization, prompt context, Prometheus timeout configuration, and error logging.
+- **Implemented improvement:** Added safe operational logging for AI inference failures, invalid responses, and exhausted inference budgets.
+- **Validation:** Added three automated logging tests; the full suite passed with **138 tests**.
+- **Security:** No API keys, incident descriptions, or raw exception messages are included in the new log statements.
+
+### Repository Security Review
+
+- Reviewed Git-tracked files for unintended credentials and sensitive artifacts.
+- Scanned tracked text files for common private-key and API-token patterns.
+- Inspected two potential matches; both were legitimate application or test code.
+- Verified that local environment files, application databases, and generated monitoring targets are excluded from Git.
+- Extended `.gitignore` to protect additional environment files and dated backups.
+- No exposed credentials were identified by these checks; the review does not guarantee detection of every secret format.
+
+### Assignment — Compromised Jetstream Key (Due October 29, 2026)
+
+- [ ] Prepare a response describing actions to take if a Jetstream SSH key or credential is compromised.
+- [ ] Post the response to the required Piazza discussion.
+
+### Weekly Coursework Documentation
+
+- [x] Update the project implementation report for October 2026.
+- [ ] Review and maintain weekly coursework and Cloudmesh contribution records.
+- [ ] Document benchmark methodology and results for completed Cloudmesh provider operations.
+
+---
 
 ## Week 4 Tasks (Due Sep 24, 2026, 9am)
 
