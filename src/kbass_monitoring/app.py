@@ -413,5 +413,25 @@ def update_monitoring_approval(application_id):
         "monitoring_approved": data["approved"],
     })
 
+
+from flask_swagger_ui import get_swaggerui_blueprint
+
+from .openapi import OPENAPI_SPEC
+
+
+@app.route("/openapi.json", methods=["GET"])
+def openapi_specification():
+    """Return the CloudOps AI OpenAPI specification."""
+    return jsonify(OPENAPI_SPEC)
+
+
+swagger_ui = get_swaggerui_blueprint(
+    "/docs",
+    "/openapi.json",
+    config={"app_name": "CloudOps AI API"},
+)
+
+app.register_blueprint(swagger_ui, url_prefix="/docs")
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=False)
