@@ -206,7 +206,7 @@ The simulation endpoint was confirmed to return HTTP 404 after the experiment, i
 
 ### 8.3 Automated Testing
 
-An earlier test run completed with **11 tests passed**. The latest verified run on October 24, 2026 completed with **135 tests passed** and no failures.
+An earlier test run completed with **11 tests passed**. The latest verified run on November 2, 2026 completed with **149 tests passed and 3 subtests passed**, with no failures.
 
 ### 8.4 Alert Detection and Recovery Latency
 
@@ -308,66 +308,116 @@ production WSGI server.
 The reusable benchmarking script, detailed methodology, and complete
 results summary are documented in `benchmarks/README.md`.
 
-## 10. Implementation Progress — October 2026
+## 10. Implementation Progress — November 2026
 
 ### 10.1 Web Dashboard and Application Management
 
-The Flask application now includes a web dashboard for monitoring and administration. Implemented functionality includes:
+The Flask application includes a web dashboard for monitoring and administration. Implemented functionality includes:
 
-- Administrator authentication and session management.
+- Administrator authentication and browser session management.
 - Application registration and persistent storage using SQLite.
 - Validation of application endpoints and registration inputs.
 - Prometheus file-based service discovery for registered monitoring targets.
+- Monitoring approval and revocation for registered applications.
 - Incident information and troubleshooting guidance through the backend API.
+- A discovery preview endpoint for inspecting registered Prometheus targets without activating them.
 
-### 10.2 Hybrid AI-Assisted Troubleshooting
+### 10.2 Modular AI Provider Architecture and Hybrid Troubleshooting
 
-The backend implements hybrid incident analysis using rule-based troubleshooting and optional LLM-generated recommendations.
+The backend implements hybrid incident analysis, combining rule-based troubleshooting with optional LLM-generated recommendations.
 
-Supported AI integrations include:
+The original AI client was refactored into a modular provider architecture to improve separation of concerns and extensibility.
 
-- OpenAI through its hosted chat-completions API.
-- Ollama through a restricted local endpoint.
-- Structured responses containing an explanation, possible causes, and recommended actions.
+Implemented components include:
+
+- A shared provider interface for consistent AI integration.
+- A provider factory for selecting an implementation through configuration.
+- An OpenAI provider using the hosted chat-completions API.
+- An Ollama provider supporting local inference.
+- Structured diagnostic responses containing an explanation, possible causes, and recommended actions.
 - Automatic rule-based fallback when AI is disabled, unavailable, or returns invalid output.
 
-AI-assisted analysis is disabled by default and requires explicit configuration.
+The provider abstraction follows a design pattern also found in the Cloudmesh AI LLM Mock reference project. The implementation adapts the provider abstraction to this monitoring application rather than reproducing the reference project's complete mock-service architecture.
 
-### 10.3 Reliability and Security Safeguards
+AI-assisted analysis remains disabled by default and requires explicit configuration.
+
+### 10.3 Reliability, Security, and Inference Budgeting
 
 Implemented safeguards include:
 
 - Restricting AI requests to selected incident fields.
 - Restricting supported AI service endpoints.
-- Treating incident details as untrusted input in the model instructions.
+- Treating incident details as untrusted input in model instructions.
 - Read-only troubleshooting recommendations without automatic remediation.
 - An in-memory diagnosis cache configured for 900 seconds and 100 entries.
-- An in-memory inference budget configured for 10 requests per 60 seconds.
+- Redis-backed inference budget coordination, with a configurable limit of 10 requests per 60 seconds.
+- Rule-based fallback when the inference budget is exhausted or Redis is unavailable.
 - Synchronization to reduce duplicate inference for concurrent requests.
 
-These controls reduce operational risks but do not eliminate risks such as sensitive information appearing within incident descriptions or prompt-injection attempts.
+These controls improve operational reliability and reduce unnecessary AI requests. They do not eliminate risks such as sensitive information appearing within incident descriptions or prompt-injection attempts.
 
-### 10.4 Automated Testing and Packaging
+### 10.4 Monitoring and Observability
 
-On October 24, 2026, the project was verified using:
+Prometheus and Grafana have been extended to monitor AI inference budget decisions.
 
-- `make install`: successful editable installation of `kbass-monitoring==0.1.0`.
-- `make test`: **135 tests passed in 0.41 seconds**.
+Implemented functionality includes:
 
-The test suite covers application management, authentication, monitoring discovery, incident handling, AI client behavior, hybrid troubleshooting, caching, inference budgeting, and validation.
+- A Prometheus counter named `cloudops_ai_budget_decisions_total`.
+- Three decision outcomes: `allowed`, `exhausted`, and `unavailable`.
+- Instrumentation of the hybrid troubleshooting workflow.
+- A Grafana dashboard panel titled **AI Inference Budget Decisions**.
+- Verification that Prometheus successfully collects the counter and retains recorded budget exhaustion events.
 
-AI client and incident integration tests use mocked provider responses. Consequently, these passing tests do not establish successful live inference against OpenAI or Ollama.
+The integration was tested using a controlled budget-exhaustion scenario. The rule-based fallback was activated, the AI provider was not called, and Prometheus successfully collected the corresponding counter increment.
 
-### 10.5 Remaining Evaluation Work
+### 10.5 Swagger UI and API Documentation
+
+The application now includes interactive API documentation using Swagger UI and an OpenAPI 3.0.3 specification.
+
+The documentation is accessible through:
+
+- `/docs/`: Interactive Swagger UI.
+- `/openapi.json`: Machine-readable OpenAPI specification.
+
+The specification documents nine API operations covering:
+
+- Application health and monitoring.
+- Application listing and registration.
+- Monitoring approval and revocation.
+- Administrator login, logout, and session management.
+- Prometheus target discovery.
+
+Authentication schemes document the management token, browser session, and CSRF token requirements.
+
+The integration was verified through Flask's test client and the Docker Compose environment. Both documentation endpoints returned HTTP 200, and the interactive Swagger interface successfully executed the health endpoint.
+
+### 10.6 Automated Testing and Packaging
+
+On November 2, 2026, the project was verified using:
+
+- Editable installation through the project's Python packaging configuration.
+- Full automated test suite: **149 tests passed and 3 subtests passed**.
+- `git diff --check`: successful.
+- Docker Compose rebuild and service verification.
+- OpenAPI route coverage verification: all nine implemented API operations documented.
+- Swagger UI and OpenAPI endpoint verification: HTTP 200.
+
+The test suite covers application management, authentication, monitoring discovery, incident handling, AI provider behavior, hybrid troubleshooting, caching, inference budgeting, Prometheus metrics, and validation.
+
+Provider integration and incident-analysis tests use controlled test responses where appropriate. Passing automated tests do not independently establish successful live inference against an external OpenAI service or a running Ollama instance.
+
+### 10.7 Remaining Evaluation Work
 
 The next development and evaluation activities include:
 
-1. Verify live inference with a configured LLM.
+1. Verify live inference with configured OpenAI and Ollama providers.
 2. Measure LLM response latency and evaluate diagnostic usefulness.
-3. Document pull-based monitoring limitations and possible event-driven alternatives.
-4. Review safeguards for sensitive incident descriptions and externally hosted models.
-5. Evaluate cloud deployment and additional monitoring benchmarks as time permits.
-6. Consider optional OrbStack and mobile application experiments only after core objectives are satisfied.
+3. Compare provider behavior and investigate additional provider implementations where justified.
+4. Further evaluate Redis-backed inference budgeting under concurrent requests and service failures.
+5. Document pull-based monitoring limitations and possible event-driven alternatives.
+6. Review safeguards for sensitive incident descriptions and externally hosted models.
+7. Evaluate cloud deployment and additional monitoring benchmarks as time permits.
+8. Review the architecture against the instructor's Cloudmesh AI LLM Mock reference and identify any remaining integration requirements.
 
 ## 11. Conclusion
 
