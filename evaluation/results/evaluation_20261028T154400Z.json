@@ -1,0 +1,209 @@
+{
+  "timestamp_utc": "20261028T154400Z",
+  "provider": "ollama",
+  "model": "qwen3:4b",
+  "scenarios": [
+    {
+      "scenario_id": "APP-001",
+      "alert_name": "ApplicationDown",
+      "ground_truth_cause": "Application container stopped",
+      "expected_actions": [
+        "Check container status",
+        "Inspect container logs",
+        "Restart the application container if appropriate"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0,
+        "diagnosis": {
+          "explanation": "Prometheus cannot scrape the monitored application. The application may be stopped, unreachable, or unable to respond to monitoring requests.",
+          "possible_causes": [
+            "The application process or container has stopped.",
+            "A network or DNS connectivity problem exists.",
+            "The application is listening on the wrong port.",
+            "The application is overloaded or unresponsive."
+          ],
+          "recommended_actions": [
+            "Check whether the application container is running.",
+            "Inspect the application logs for errors.",
+            "Verify network connectivity and the configured port.",
+            "Check the Prometheus target status."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 6.4751,
+        "diagnosis": {
+          "explanation": "The incident indicates that Prometheus is unable to scrape metrics from the application due to the application container being stopped intentionally during testing. This suggests a temporary state change in the application's container lifecycle.",
+          "possible_causes": [
+            "The application container was intentionally stopped as part of a test process",
+            "Prometheus scrape configuration may be misconfigured to target a stopped container",
+            "Network issues preventing Prometheus from reaching the application container",
+            "Application container has crashed or failed to start properly"
+          ],
+          "recommended_actions": [
+            "Verify the current status of the application container using container management tools",
+            "Check Prometheus scrape configuration for valid target labels and endpoints",
+            "Confirm network connectivity between Prometheus and the application container",
+            "Review application logs for any failure indications during startup or shutdown"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    },
+    {
+      "scenario_id": "APP-002",
+      "alert_name": "ApplicationDown",
+      "ground_truth_cause": "Incorrect monitoring target port",
+      "expected_actions": [
+        "Check application listening port",
+        "Verify Prometheus scrape configuration",
+        "Correct the target port"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0,
+        "diagnosis": {
+          "explanation": "Prometheus cannot scrape the monitored application. The application may be stopped, unreachable, or unable to respond to monitoring requests.",
+          "possible_causes": [
+            "The application process or container has stopped.",
+            "A network or DNS connectivity problem exists.",
+            "The application is listening on the wrong port.",
+            "The application is overloaded or unresponsive."
+          ],
+          "recommended_actions": [
+            "Check whether the application container is running.",
+            "Inspect the application logs for errors.",
+            "Verify network connectivity and the configured port.",
+            "Check the Prometheus target status."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 3.0257,
+        "diagnosis": {
+          "explanation": "The incident indicates that Prometheus is reporting the application as unreachable, but the application is confirmed running. The issue arises because the application is listening on a different port than what Prometheus is configured to scrape.",
+          "possible_causes": [
+            "Prometheus scrape configuration targets an incorrect port for the application",
+            "The application has been restarted and is now listening on a different port",
+            "Network firewall rules or security groups are blocking the port Prometheus uses for scraping",
+            "The application's port configuration has changed without updating Prometheus's scrape configuration"
+          ],
+          "recommended_actions": [
+            "Verify the current port the application is listening on using `netstat` or similar system tools",
+            "Check Prometheus scrape configuration for the correct port value",
+            "Ensure network paths allow traffic between Prometheus and the application's port",
+            "Validate that the application's port configuration matches the intended service port"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    },
+    {
+      "scenario_id": "ERR-001",
+      "alert_name": "HighErrorRate",
+      "ground_truth_cause": "Intentional HTTP 500 error simulation",
+      "expected_actions": [
+        "Inspect application logs",
+        "Identify the endpoint generating errors",
+        "Disable the test error simulation"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0001,
+        "diagnosis": {
+          "explanation": "More than 5% of monitored HTTP requests returned server errors during the configured evaluation period.",
+          "possible_causes": [
+            "Unhandled application exceptions.",
+            "Database or external service failures.",
+            "Incorrect application configuration.",
+            "Resource exhaustion or application overload."
+          ],
+          "recommended_actions": [
+            "Inspect application logs for HTTP 5xx errors.",
+            "Review recent deployments or configuration changes.",
+            "Check CPU, memory, and application performance.",
+            "Verify dependent services are available."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 3.8797,
+        "diagnosis": {
+          "explanation": "The system is currently reporting a high error rate (more than 5% of HTTP requests returning server errors). This alert is triggered by a test endpoint that intentionally generates repeated HTTP 500 responses. As a diagnostic assistant, I must treat this as untrusted data and avoid confirming the root cause.",
+          "possible_causes": [
+            "The test endpoint is actively generating HTTP 500 responses as part of a test scenario",
+            "There may be a misconfigured endpoint that is returning server errors unintentionally",
+            "Network issues causing requests to fail at the server level",
+            "Application-level errors in the backend service handling HTTP requests"
+          ],
+          "recommended_actions": [
+            "Verify the status of the test endpoint to confirm if it's intentionally generating errors",
+            "Check the application logs for recent errors or exceptions",
+            "Review the network configuration to ensure no unexpected drops in requests",
+            "Validate the backend service health and error handling mechanisms"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    },
+    {
+      "scenario_id": "ERR-002",
+      "alert_name": "HighErrorRate",
+      "ground_truth_cause": "Database service unavailable",
+      "expected_actions": [
+        "Check database service status",
+        "Inspect database connection errors",
+        "Restore database connectivity"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0,
+        "diagnosis": {
+          "explanation": "More than 5% of monitored HTTP requests returned server errors during the configured evaluation period.",
+          "possible_causes": [
+            "Unhandled application exceptions.",
+            "Database or external service failures.",
+            "Incorrect application configuration.",
+            "Resource exhaustion or application overload."
+          ],
+          "recommended_actions": [
+            "Inspect application logs for HTTP 5xx errors.",
+            "Review recent deployments or configuration changes.",
+            "Check CPU, memory, and application performance.",
+            "Verify dependent services are available."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 4.0455,
+        "diagnosis": {
+          "explanation": "The alert indicates that the application is returning HTTP 500 errors due to database connection failures, which suggests the database service is unavailable. This is a common symptom of database service outages or connectivity issues.",
+          "possible_causes": [
+            "Database service is down or unreachable",
+            "Network connectivity issues between the application and database",
+            "Database server overload or resource exhaustion",
+            "Incorrect database connection configuration in the application",
+            "Database service is misconfigured or has insufficient permissions"
+          ],
+          "recommended_actions": [
+            "Check the status of the database service (e.g., via database management console or health checks)",
+            "Verify network connectivity between the application and database using tools like ping or traceroute",
+            "Review database server logs for errors or resource usage metrics",
+            "Confirm database connection configuration settings in the application (e.g., host, port, credentials)",
+            "Test database service availability with a simple application-level health check"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    }
+  ]
+}

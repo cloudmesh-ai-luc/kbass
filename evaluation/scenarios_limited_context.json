@@ -1,0 +1,54 @@
+[
+  {
+    "id": "APP-001",
+    "name": "ApplicationDown",
+    "state": "firing",
+    "summary": "Prometheus cannot scrape the application.",
+    "description": "The monitoring target has been unreachable for several scrape attempts. No application metrics are available.",
+    "ground_truth_cause": "Application container stopped",
+    "expected_actions": [
+      "Check container status",
+      "Inspect container logs",
+      "Restart the application container if appropriate"
+    ]
+  },
+  {
+    "id": "APP-002",
+    "name": "ApplicationDown",
+    "state": "firing",
+    "summary": "Prometheus reports that the application is unreachable.",
+    "description": "Prometheus cannot connect to the configured metrics endpoint. The scrape target is reporting a connection failure.",
+    "ground_truth_cause": "Incorrect monitoring target port",
+    "expected_actions": [
+      "Check application listening port",
+      "Verify Prometheus scrape configuration",
+      "Correct the target port"
+    ]
+  },
+  {
+    "id": "ERR-001",
+    "name": "HighErrorRate",
+    "state": "firing",
+    "summary": "More than 5% of HTTP requests returned server errors.",
+    "description": "The application has returned an elevated number of HTTP 500 responses over the last minute.",
+    "ground_truth_cause": "Intentional HTTP 500 error simulation",
+    "expected_actions": [
+      "Inspect application logs",
+      "Identify the endpoint generating errors",
+      "Disable the test error simulation"
+    ]
+  },
+  {
+    "id": "ERR-002",
+    "name": "HighErrorRate",
+    "state": "firing",
+    "summary": "The application is returning HTTP 500 errors.",
+    "description": "Multiple application requests are failing with HTTP 500 responses. The error rate exceeds the alert threshold.",
+    "ground_truth_cause": "Database service unavailable",
+    "expected_actions": [
+      "Check database service status",
+      "Inspect database connection errors",
+      "Restore database connectivity"
+    ]
+  }
+]

@@ -1,0 +1,226 @@
+{
+  "dataset": "evaluation/scenarios_limited_context.json",
+  "timestamp_utc": "20261028T164545Z",
+  "provider": "ollama",
+  "model": "qwen3:4b",
+  "scenarios": [
+    {
+      "scenario_id": "APP-001",
+      "alert_name": "ApplicationDown",
+      "ground_truth_cause": "Application container stopped",
+      "expected_actions": [
+        "Check container status",
+        "Inspect container logs",
+        "Restart the application container if appropriate"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0,
+        "diagnosis": {
+          "explanation": "Prometheus cannot scrape the monitored application. The application may be stopped, unreachable, or unable to respond to monitoring requests.",
+          "possible_causes": [
+            "The application process or container has stopped.",
+            "A network or DNS connectivity problem exists.",
+            "The application is listening on the wrong port.",
+            "The application is overloaded or unresponsive."
+          ],
+          "recommended_actions": [
+            "Check whether the application container is running.",
+            "Inspect the application logs for errors.",
+            "Verify network connectivity and the configured port.",
+            "Check the Prometheus target status."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 6.2648,
+        "diagnosis": {
+          "explanation": "The Prometheus monitoring system is reporting that it cannot reach the application target during scraping attempts. This indicates a failure in the Prometheus scraping process, which may be caused by network issues, target unavailability, or configuration problems with the Prometheus server itself.",
+          "possible_causes": [
+            "Network connectivity issues between Prometheus and the application target",
+            "Application service is not running or is down",
+            "Prometheus scrape interval is too short for the issue to manifest",
+            "Application target URL or port configuration in Prometheus is incorrect",
+            "Firewall rules blocking traffic between Prometheus and the application",
+            "Application is returning an error response that Prometheus does not handle properly"
+          ],
+          "recommended_actions": [
+            "Verify network connectivity from the Prometheus server to the application target using ping or network tools",
+            "Check if the application service is running and accessible via HTTP/HTTPS",
+            "Review Prometheus scrape configuration for correct URL, port, and labels",
+            "Increase the Prometheus scrape interval temporarily to see if the issue persists",
+            "Check firewall rules to ensure traffic is allowed between Prometheus and the application",
+            "Validate application health checks or readiness probes if configured"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    },
+    {
+      "scenario_id": "APP-002",
+      "alert_name": "ApplicationDown",
+      "ground_truth_cause": "Incorrect monitoring target port",
+      "expected_actions": [
+        "Check application listening port",
+        "Verify Prometheus scrape configuration",
+        "Correct the target port"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0,
+        "diagnosis": {
+          "explanation": "Prometheus cannot scrape the monitored application. The application may be stopped, unreachable, or unable to respond to monitoring requests.",
+          "possible_causes": [
+            "The application process or container has stopped.",
+            "A network or DNS connectivity problem exists.",
+            "The application is listening on the wrong port.",
+            "The application is overloaded or unresponsive."
+          ],
+          "recommended_actions": [
+            "Check whether the application container is running.",
+            "Inspect the application logs for errors.",
+            "Verify network connectivity and the configured port.",
+            "Check the Prometheus target status."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 3.8326,
+        "diagnosis": {
+          "explanation": "The alert indicates that Prometheus is unable to connect to the application's metrics endpoint, resulting in a scrape failure. This suggests a network or application layer issue preventing Prometheus from communicating with the target.",
+          "possible_causes": [
+            "Network connectivity issues between Prometheus and the application server",
+            "Application server is not running or has crashed",
+            "Firewall or security group rules blocking the connection",
+            "Incorrect URL or port specified in Prometheus configuration",
+            "Application metrics endpoint is not configured correctly",
+            "Network timeouts or proxy issues"
+          ],
+          "recommended_actions": [
+            "Verify network connectivity between Prometheus and the application server using tools like `ping` or `telnet`",
+            "Check if the application server is running and responsive",
+            "Review firewall/security group rules to ensure the required ports are open",
+            "Confirm the Prometheus scrape configuration (URL, port, path) matches the application's metrics endpoint",
+            "Validate the application's metrics endpoint is correctly exposed and accessible",
+            "Check for network timeouts or proxy settings that might interfere with the connection"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    },
+    {
+      "scenario_id": "ERR-001",
+      "alert_name": "HighErrorRate",
+      "ground_truth_cause": "Intentional HTTP 500 error simulation",
+      "expected_actions": [
+        "Inspect application logs",
+        "Identify the endpoint generating errors",
+        "Disable the test error simulation"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0,
+        "diagnosis": {
+          "explanation": "More than 5% of monitored HTTP requests returned server errors during the configured evaluation period.",
+          "possible_causes": [
+            "Unhandled application exceptions.",
+            "Database or external service failures.",
+            "Incorrect application configuration.",
+            "Resource exhaustion or application overload."
+          ],
+          "recommended_actions": [
+            "Inspect application logs for HTTP 5xx errors.",
+            "Review recent deployments or configuration changes.",
+            "Check CPU, memory, and application performance.",
+            "Verify dependent services are available."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 3.5411,
+        "diagnosis": {
+          "explanation": "The monitoring system has detected a high error rate (over 5% of HTTP requests returning 500 errors) in the last minute. This indicates potential issues with application stability or backend services.",
+          "possible_causes": [
+            "Application code bugs or misconfigurations",
+            "Insufficient server capacity to handle current load",
+            "Database connection pool exhaustion",
+            "Network issues affecting backend services",
+            "Third-party service outages",
+            "Resource constraints (CPU, memory, disk I/O)"
+          ],
+          "recommended_actions": [
+            "Check application logs for recent errors",
+            "Verify server resource utilization (CPU, memory, disk)",
+            "Review database connection pool settings",
+            "Test network connectivity to critical backend services",
+            "Monitor third-party service status",
+            "Scale resources if necessary"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    },
+    {
+      "scenario_id": "ERR-002",
+      "alert_name": "HighErrorRate",
+      "ground_truth_cause": "Database service unavailable",
+      "expected_actions": [
+        "Check database service status",
+        "Inspect database connection errors",
+        "Restore database connectivity"
+      ],
+      "rule_based": {
+        "latency_seconds": 0.0,
+        "diagnosis": {
+          "explanation": "More than 5% of monitored HTTP requests returned server errors during the configured evaluation period.",
+          "possible_causes": [
+            "Unhandled application exceptions.",
+            "Database or external service failures.",
+            "Incorrect application configuration.",
+            "Resource exhaustion or application overload."
+          ],
+          "recommended_actions": [
+            "Inspect application logs for HTTP 5xx errors.",
+            "Review recent deployments or configuration changes.",
+            "Check CPU, memory, and application performance.",
+            "Verify dependent services are available."
+          ],
+          "diagnosis_type": "rule_based",
+          "root_cause_confirmed": false
+        }
+      },
+      "ai_assisted": {
+        "latency_seconds": 4.0226,
+        "diagnosis": {
+          "explanation": "The alert indicates that multiple application requests are failing with HTTP 500 errors, and the error rate has exceeded the predefined threshold. This suggests that the application is encountering internal server errors, which could be caused by various factors such as application bugs, resource constraints, or external service failures.",
+          "possible_causes": [
+            "Application code bugs or misconfigurations",
+            "Insufficient server resources (CPU, memory, disk I/O)",
+            "External service dependencies failing",
+            "Network connectivity issues",
+            "Database connection problems",
+            "Increased load or traffic spikes",
+            "Incorrect error handling mechanisms"
+          ],
+          "recommended_actions": [
+            "Check application logs for specific error details",
+            "Review recent application updates or deployments",
+            "Verify server resource utilization metrics",
+            "Test connectivity to external services",
+            "Inspect database health and connection pools",
+            "Monitor traffic patterns for sudden spikes",
+            "Validate error handling and exception propagation mechanisms"
+          ],
+          "diagnosis_type": "ai_assisted",
+          "root_cause_confirmed": false
+        }
+      }
+    }
+  ]
+}

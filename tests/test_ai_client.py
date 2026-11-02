@@ -29,7 +29,7 @@ class TestAIClient(unittest.TestCase):
         },
         clear=True,
     )
-    @patch("kbass_monitoring.ai_client.urlopen")
+    @patch("kbass_monitoring.providers.openai_provider.urlopen")
     def test_successful_response(self, mock_urlopen):
         analysis = {
             "explanation": "The application is unreachable.",
@@ -64,7 +64,7 @@ class TestAIClient(unittest.TestCase):
         },
         clear=True,
     )
-    @patch("kbass_monitoring.ai_client.urlopen")
+    @patch("kbass_monitoring.providers.openai_provider.urlopen")
     def test_api_failure(self, mock_urlopen):
         mock_urlopen.side_effect = TimeoutError("Request timed out")
 
@@ -99,7 +99,7 @@ class TestOllamaAIClient(unittest.TestCase):
         },
         clear=True,
     )
-    @patch("kbass_monitoring.ai_client.urlopen")
+    @patch("kbass_monitoring.providers.ollama_provider.urlopen")
     def test_ollama_structured_response(self, mock_urlopen):
         analysis = {
             "explanation": "The application may be unavailable.",
@@ -154,7 +154,7 @@ class TestOllamaAIClient(unittest.TestCase):
         },
         clear=True,
     )
-    @patch("kbass_monitoring.ai_client.urlopen")
+    @patch("kbass_monitoring.providers.ollama_provider.urlopen")
     def test_ollama_docker_host_address(self, mock_urlopen):
         analysis = {
             "explanation": "The application may be unavailable.",
@@ -189,7 +189,7 @@ class TestOllamaAIClient(unittest.TestCase):
         },
         clear=True,
     )
-    @patch("kbass_monitoring.ai_client.urlopen")
+    @patch("kbass_monitoring.providers.ollama_provider.urlopen")
     def test_ollama_rejects_unsupported_endpoint(self, mock_urlopen):
         with self.assertRaises(ValueError):
             analyze_with_ai({

@@ -6,11 +6,13 @@ from urllib.request import urlopen
 from flask import Flask, Response, jsonify, render_template, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
+from redis.exceptions import RedisError
+from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter, generate_latest, multiprocess
 
 from .hybrid_troubleshooting import analyze_incident_hybrid
 from .diagnosis_cache import DiagnosisCache
 from .ai_budget import InferenceBudget
+from .redis_ai_budget import RedisInferenceBudget
 from .registry import add_application, list_applications
 from .auth import require_management_token
 
@@ -18,7 +20,24 @@ app = Flask(__name__)
 
 # Shared in-memory AI diagnosis cache for this application process.
 diagnosis_cache = DiagnosisCache(ttl_seconds=900, max_entries=100)
-inference_budget = InferenceBudget(max_requests=10, window_seconds=60)
+# Use a shared inference budget when Redis is configured.
+redis_budget_url = os.environ.get(
+    "CLOUDOPS_AI_BUDGET_REDIS_URL"
+) or os.environ.get("CLOUDOPS_RATE_LIMIT_STORAGE_URI")
+
+if redis_budget_url and redis_budget_url.startswith(
+    ("redis://", "rediss://")
+):
+    inference_budget = RedisInferenceBudget(
+        redis_url=redis_budget_url,
+        max_requests=10,
+        window_seconds=60,
+    )
+else:
+    inference_budget = InferenceBudget(
+        max_requests=10,
+        window_seconds=60,
+    )
 
 # Browser management sessions are disabled until a secret is configured.
 app.config.update(
@@ -39,6 +58,15 @@ limiter = Limiter(
         "CLOUDOPS_RATE_LIMIT_STORAGE_URI", "memory://"
     ),
 )
+
+@app.errorhandler(RedisError)
+def handle_redis_storage_error(error):
+    """Keep Redis-dependent operations unavailable during storage failures."""
+    app.logger.warning("redis_storage_unavailable")
+    return jsonify({
+        "error": "A required service is temporarily unavailable"
+    }), 503
+
 
 PROMETHEUS_URL = os.environ.get("PROMETHEUS_URL", "http://prometheus:9090").rstrip("/")
 
@@ -226,7 +254,15 @@ def simulate_error():
 
 @app.route("/metrics")
 def metrics():
-    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
+    """Expose Prometheus metrics, aggregating Gunicorn workers when enabled."""
+    if os.environ.get("PROMETHEUS_MULTIPROC_DIR"):
+        registry = CollectorRegistry()
+        multiprocess.MultiProcessCollector(registry)
+        payload = generate_latest(registry)
+    else:
+        payload = generate_latest()
+
+    return Response(payload, mimetype=CONTENT_TYPE_LATEST)
 
 
 
@@ -376,6 +412,26 @@ def update_monitoring_approval(application_id):
         "application_id": application_id,
         "monitoring_approved": data["approved"],
     })
+
+
+from flask_swagger_ui import get_swaggerui_blueprint
+
+from .openapi import OPENAPI_SPEC
+
+
+@app.route("/openapi.json", methods=["GET"])
+def openapi_specification():
+    """Return the CloudOps AI OpenAPI specification."""
+    return jsonify(OPENAPI_SPEC)
+
+
+swagger_ui = get_swaggerui_blueprint(
+    "/docs",
+    "/openapi.json",
+    config={"app_name": "CloudOps AI API"},
+)
+
+app.register_blueprint(swagger_ui, url_prefix="/docs")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=False)
