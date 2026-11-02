@@ -6,6 +6,7 @@ from urllib.request import urlopen
 from flask import Flask, Response, jsonify, render_template, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from redis.exceptions import RedisError
 from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter, generate_latest, multiprocess
 
 from .hybrid_troubleshooting import analyze_incident_hybrid
@@ -57,6 +58,15 @@ limiter = Limiter(
         "CLOUDOPS_RATE_LIMIT_STORAGE_URI", "memory://"
     ),
 )
+
+@app.errorhandler(RedisError)
+def handle_redis_storage_error(error):
+    """Keep Redis-dependent operations unavailable during storage failures."""
+    app.logger.warning("redis_storage_unavailable")
+    return jsonify({
+        "error": "A required service is temporarily unavailable"
+    }), 503
+
 
 PROMETHEUS_URL = os.environ.get("PROMETHEUS_URL", "http://prometheus:9090").rstrip("/")
 
