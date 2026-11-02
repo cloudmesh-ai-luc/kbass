@@ -8,6 +8,7 @@ from contextlib import nullcontext
 from .troubleshooting import analyze_incident
 from .diagnosis_cache import DiagnosisCache
 from .ai_client import analyze_with_ai
+from .redis_ai_budget import InferenceBudgetUnavailable
 
 logger = logging.getLogger(__name__)
 
@@ -70,9 +71,16 @@ def analyze_incident_hybrid(incident, ai_analyzer=None, cache=None, budget=None)
                     return cached
 
             # Only actual AI inference attempts consume the budget.
-            if budget is not None and not budget.try_acquire():
-                logger.warning("ai_budget_exhausted")
-                return fallback
+            if budget is not None:
+                try:
+                    permitted = budget.try_acquire()
+                except InferenceBudgetUnavailable:
+                    logger.warning("redis_ai_budget_unavailable")
+                    return fallback
+
+                if not permitted:
+                    logger.warning("ai_budget_exhausted")
+                    return fallback
 
             result = ai_analyzer(incident)
 

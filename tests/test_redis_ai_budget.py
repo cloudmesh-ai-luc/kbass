@@ -5,7 +5,10 @@ from unittest.mock import patch
 
 from redis.exceptions import ConnectionError
 
-from kbass_monitoring.redis_ai_budget import RedisInferenceBudget
+from kbass_monitoring.redis_ai_budget import (
+    InferenceBudgetUnavailable,
+    RedisInferenceBudget,
+)
 
 
 class TestRedisInferenceBudget(unittest.TestCase):
@@ -49,7 +52,42 @@ class TestRedisInferenceBudget(unittest.TestCase):
             redis_url="redis://localhost:6379/0"
         )
 
-        self.assertFalse(budget.try_acquire())
+        with self.assertRaises(InferenceBudgetUnavailable):
+            budget.try_acquire()
+
+    @patch("kbass_monitoring.redis_ai_budget.Redis.from_url")
+    def test_redis_outage_does_not_log_budget_exhaustion(self, mock_from_url):
+        from kbass_monitoring.hybrid_troubleshooting import analyze_incident_hybrid
+
+        mock_script = mock_from_url.return_value.register_script.return_value
+        mock_script.side_effect = ConnectionError("Redis unavailable")
+
+        budget = RedisInferenceBudget(
+            redis_url="redis://localhost:6379/0"
+        )
+        ai_calls = []
+
+        def fake_ai_analyzer(incident):
+            ai_calls.append(incident)
+            return {"explanation": "Should not run"}
+
+        with self.assertLogs(level="WARNING") as captured:
+            result = analyze_incident_hybrid(
+                {"name": "ApplicationDown", "state": "firing"},
+                ai_analyzer=fake_ai_analyzer,
+                budget=budget,
+            )
+
+        self.assertEqual(result["diagnosis_type"], "rule_based")
+        self.assertEqual(ai_calls, [])
+        self.assertTrue(
+            any("redis_ai_budget_unavailable" in message
+                for message in captured.output)
+        )
+        self.assertFalse(
+            any("ai_budget_exhausted" in message
+                for message in captured.output)
+        )
 
     def test_invalid_configuration_rejected(self):
         for options in (

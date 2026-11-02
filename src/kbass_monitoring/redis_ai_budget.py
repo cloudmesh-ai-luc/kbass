@@ -31,6 +31,10 @@ return 1
 """
 
 
+class InferenceBudgetUnavailable(Exception):
+    """The shared inference budget could not be checked."""
+
+
 class RedisInferenceBudget:
     """Enforce one inference budget across all application workers."""
 
@@ -70,6 +74,7 @@ class RedisInferenceBudget:
                     ],
                 )
             )
-        except RedisError:
-            logger.warning("redis_ai_budget_unavailable")
-            return False
+        except RedisError as exc:
+            raise InferenceBudgetUnavailable(
+                "Shared inference budget unavailable"
+            ) from exc
