@@ -11,6 +11,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter, g
 from .hybrid_troubleshooting import analyze_incident_hybrid
 from .diagnosis_cache import DiagnosisCache
 from .ai_budget import InferenceBudget
+from .redis_ai_budget import RedisInferenceBudget
 from .registry import add_application, list_applications
 from .auth import require_management_token
 
@@ -18,7 +19,24 @@ app = Flask(__name__)
 
 # Shared in-memory AI diagnosis cache for this application process.
 diagnosis_cache = DiagnosisCache(ttl_seconds=900, max_entries=100)
-inference_budget = InferenceBudget(max_requests=10, window_seconds=60)
+# Use a shared inference budget when Redis is configured.
+redis_budget_url = os.environ.get(
+    "CLOUDOPS_AI_BUDGET_REDIS_URL"
+) or os.environ.get("CLOUDOPS_RATE_LIMIT_STORAGE_URI")
+
+if redis_budget_url and redis_budget_url.startswith(
+    ("redis://", "rediss://")
+):
+    inference_budget = RedisInferenceBudget(
+        redis_url=redis_budget_url,
+        max_requests=10,
+        window_seconds=60,
+    )
+else:
+    inference_budget = InferenceBudget(
+        max_requests=10,
+        window_seconds=60,
+    )
 
 # Browser management sessions are disabled until a secret is configured.
 app.config.update(
