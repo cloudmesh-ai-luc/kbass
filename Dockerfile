@@ -9,4 +9,8 @@ RUN pip install --no-cache-dir .
 
 EXPOSE 8000
 
-CMD ["python", "-m", "kbass_monitoring.app"]
+COPY gunicorn.conf.py docker-entrypoint.sh ./
+
+RUN chmod +x /app/docker-entrypoint.sh
+
+CMD ["/app/docker-entrypoint.sh"]

@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from flask import Flask, Response, jsonify, render_template, request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, generate_latest
+from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter, generate_latest, multiprocess
 
 from .hybrid_troubleshooting import analyze_incident_hybrid
 from .diagnosis_cache import DiagnosisCache
@@ -226,7 +226,15 @@ def simulate_error():
 
 @app.route("/metrics")
 def metrics():
-    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
+    """Expose Prometheus metrics, aggregating Gunicorn workers when enabled."""
+    if os.environ.get("PROMETHEUS_MULTIPROC_DIR"):
+        registry = CollectorRegistry()
+        multiprocess.MultiProcessCollector(registry)
+        payload = generate_latest(registry)
+    else:
+        payload = generate_latest()
+
+    return Response(payload, mimetype=CONTENT_TYPE_LATEST)
 
 
 
