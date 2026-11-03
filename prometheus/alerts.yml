@@ -30,3 +30,32 @@ groups:
         annotations:
           summary: "High HTTP error rate for {{ $labels.instance }}"
           description: "More than 5% of requests returned 5xx errors over the last minute."
+
+      - alert: HighCPUUsage
+        expr: |
+          (
+            rate(container_cpu_usage_seconds_total{
+              cpu="total",
+              id=~"/docker/.*"
+            }[2m]) * 100
+          ) > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "Container CPU usage has exceeded 80% of one CPU core for at least one minute."
+
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            container_memory_working_set_bytes{
+              id=~"/docker/.*"
+            } / 1024 / 1024
+          ) > 512
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Container memory working set has exceeded 512 MiB for at least one minute."

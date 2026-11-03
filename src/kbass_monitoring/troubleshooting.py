@@ -51,6 +51,50 @@ def analyze_incident(incident):
             "root_cause_confirmed": False,
         }
 
+    if name == "HighCPUUsage":
+        return {
+            "explanation": (
+                "A monitored container has exceeded the configured "
+                "CPU usage threshold of 80% of one CPU core."
+            ),
+            "possible_causes": [
+                "Increased application traffic or workload.",
+                "CPU-intensive processing or background tasks.",
+                "Inefficient code or excessive computation.",
+                "A process consuming CPU unexpectedly.",
+            ],
+            "recommended_actions": [
+                "Identify the affected container in Grafana.",
+                "Inspect container CPU usage with docker stats.",
+                "Review application logs and recent workload changes.",
+                "Investigate CPU-intensive processes before scaling.",
+            ],
+            "diagnosis_type": "rule_based",
+            "root_cause_confirmed": False,
+        }
+
+    if name == "HighMemoryUsage":
+        return {
+            "explanation": (
+                "A monitored container has exceeded the configured "
+                "memory working-set threshold of 512 MiB."
+            ),
+            "possible_causes": [
+                "Increased application workload or memory demand.",
+                "Memory retained longer than expected.",
+                "Large in-memory datasets or caches.",
+                "A possible application memory leak.",
+            ],
+            "recommended_actions": [
+                "Identify the affected container in Grafana.",
+                "Inspect memory consumption with docker stats.",
+                "Review application logs for memory-related errors.",
+                "Investigate sustained memory growth before restarting.",
+            ],
+            "diagnosis_type": "rule_based",
+            "root_cause_confirmed": False,
+        }
+
     return {
         "explanation": (
             f"The monitoring system reported {name} "
