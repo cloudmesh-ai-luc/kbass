@@ -30,9 +30,19 @@ class TestTroubleshooting(unittest.TestCase):
         result = self.check_analysis("HighErrorRate")
         self.assertIn("5%", result["explanation"])
 
-    def test_unknown_alert(self):
+    def test_high_cpu_usage(self):
+        result = self.check_analysis("HighCPUUsage")
+        self.assertIn("80%", result["explanation"])
+        self.assertIn("docker stats", " ".join(result["recommended_actions"]))
+
+    def test_high_memory_usage(self):
         result = self.check_analysis("HighMemoryUsage")
-        self.assertIn("HighMemoryUsage", result["explanation"])
+        self.assertIn("512 MiB", result["explanation"])
+        self.assertIn("docker stats", " ".join(result["recommended_actions"]))
+
+    def test_unknown_alert(self):
+        result = self.check_analysis("UnknownAlert")
+        self.assertIn("UnknownAlert", result["explanation"])
 
 
 if __name__ == "__main__":

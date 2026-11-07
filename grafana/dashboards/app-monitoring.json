@@ -140,6 +140,88 @@
           "instant": false
         }
       ]
+    },
+    {
+      "id": 6,
+      "title": "Container CPU Usage",
+      "type": "timeseries",
+      "description": "CPU usage per Docker container, as a percentage of one CPU core.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "label_replace(rate(container_cpu_usage_seconds_total{cpu=\"total\",id=~\"/docker/[a-f0-9]{64}\"}[2m]) * 100, \"container\", \"$1\", \"id\", \"/docker/([a-f0-9]{12}).*\")",
+          "legendFormat": "Container {{container}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Container Memory Usage",
+      "type": "timeseries",
+      "description": "Memory working set per Docker container.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "label_replace(container_memory_working_set_bytes{id=~\"/docker/[a-f0-9]{64}\"} / 1024 / 1024, \"container\", \"$1\", \"id\", \"/docker/([a-f0-9]{12}).*\")",
+          "legendFormat": "Container {{container}}",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "mebibytes",
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      }
     }
   ],
   "refresh": "5s",
