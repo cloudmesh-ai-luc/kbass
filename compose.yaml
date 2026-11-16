@@ -1,5 +1,16 @@
 services:
   app:
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5)"
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     build: .
     container_name: kbass-monitoring-app
     env_file:
@@ -16,7 +27,14 @@ services:
       - "127.0.0.1:8000:8000"
 
   prometheus:
-    image: prom/prometheus:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9090/-/ready"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    image: prom/prometheus:v3.15.0
     container_name: kbass-prometheus
     ports:
       - "127.0.0.1:9090:9090"
@@ -28,6 +46,13 @@ services:
       - app
 
   cadvisor:
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     image: ghcr.io/google/cadvisor:0.55.0
     container_name: kbass-cadvisor
     ports:
@@ -40,7 +65,14 @@ services:
 
 
   grafana:
-    image: grafana/grafana:latest
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "http://127.0.0.1:3000/api/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    image: grafana/grafana:13.2.3
     container_name: kbass-grafana
     ports:
       - "127.0.0.1:3000:3000"
@@ -50,7 +82,7 @@ services:
     depends_on:
       - prometheus
   redis:
-    image: redis:7-alpine
+    image: redis:7.4.12-alpine
     restart: unless-stopped
     command: ["redis-server", "--save", "", "--appendonly", "no"]
     healthcheck:

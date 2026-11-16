@@ -1,9 +1,91 @@
-# kbass
-# Khalidou Bass | kbass4@luc.edu #
+# CloudOps AI
 
-*  Accounts: https://github.com/cloudmesh-ai-luc/kbass
+**AI-Assisted Cloud Monitoring and Troubleshooting Dashboard**
 
-## October 2026 — Coursework and Cloudmesh Contributions
+CloudOps AI is a containerized monitoring platform designed to help developers and system administrators observe application health, investigate incidents, and troubleshoot operational problems.
+
+The project combines Flask, Prometheus, Grafana, cAdvisor, and Redis with rule-based troubleshooting and optional AI-assisted incident analysis. Docker Compose provides a reproducible environment for local development and planned cloud deployments.
+
+**Project:** COMP 488 — Cloud Computing
+
+**Institution:** Loyola University Chicago
+
+**Development status:** Local Docker Compose deployment verified on macOS; Linux AMD64 image build and health checks verified. AWS EC2 and Chameleon Cloud deployment validation pending.
+
+---
+
+## Architecture
+
+CloudOps AI uses a containerized monitoring architecture:
+
+- **Flask:** Web dashboard, application registry, authentication, and incident APIs.
+- **Prometheus:** Metrics collection and monitoring.
+- **Grafana:** Metrics visualization and dashboards.
+- **cAdvisor:** Container resource monitoring.
+- **Redis:** Supporting application infrastructure.
+- **AI troubleshooting:** Rule-based incident analysis with optional hosted AI or Ollama integration.
+- **Docker Compose:** Service orchestration and reproducible deployment.
+
+## Key Features
+
+- Application registration and health monitoring.
+- Monitoring dashboards and operational metrics.
+- Incident detection and troubleshooting recommendations.
+- Optional AI-assisted incident explanations.
+- Administrator authentication and protected management endpoints.
+- Automated tests and deployment smoke checks.
+- Support for local deployment and planned cloud deployment on AWS EC2 and Chameleon Cloud.
+
+---
+
+## Testing and Validation
+
+The latest verified local test run completed successfully with **156 passing tests and 10 subtests**.
+
+The Docker Compose deployment also passed smoke checks for all five services: Flask, Prometheus, Grafana, cAdvisor, and Redis.
+
+These results reflect local validation. End-to-end deployment testing on AWS EC2 and Chameleon Cloud remains pending.
+
+## Quick Start
+
+**Prerequisites:** Git, Python 3, Docker with Compose v2, and Make. Ensure Docker is running.
+
+```bash
+git clone https://github.com/kbass-maker/kbass.git
+cd kbass
+git checkout project-implementation
+make check
+make setup
+make up
+make status
+make smoke
+```
+
+Once the services are healthy, open the application at http://localhost:8000.
+
+To stop the application:
+
+```bash
+make down
+```
+
+## Documentation
+
+- [Deployment Guide](docs/deployment.md) — Installation, configuration, verification, and cloud deployment guidance.
+- [Project Report](docs/project/project.md) — Architecture, implementation, evaluation, and future work.
+- [Midterm Report](docs/project/midterm.md) — Earlier project progress and milestones.
+
+For detailed configuration and security guidance, consult the deployment guide before deploying to a remote server.
+
+---
+
+## Coursework and Cloudmesh Contributions
+
+**Student:** Khalidou Bass (`kbass4@luc.edu`)
+
+**Course repository:** https://github.com/cloudmesh-ai-luc/kbass
+
+### October 2026 — Progress and Contributions
 
 ### Cloudmesh VM Contributions
 

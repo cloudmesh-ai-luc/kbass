@@ -75,6 +75,148 @@ class TestAIClient(unittest.TestCase):
         "os.environ",
         {
             "CLOUDOPS_AI_API_KEY": "test-key",
+            "CLOUDOPS_AI_MODEL": "qwen-plus",
+            "CLOUDOPS_AI_ENDPOINT": (
+                "https://dashscope-intl.aliyuncs.com/"
+                "compatible-mode/v1/chat/completions"
+            ),
+        },
+        clear=True,
+    )
+    @patch("kbass_monitoring.providers.openai_provider.urlopen")
+    def test_hosted_qwen_endpoint(self, mock_urlopen):
+        analysis = {
+            "explanation": "The service may be unavailable.",
+            "possible_causes": ["The container may have stopped."],
+            "recommended_actions": ["Inspect container logs."],
+        }
+        mock_urlopen.return_value.__enter__.return_value = io.BytesIO(
+            json.dumps({
+                "choices": [
+                    {"message": {"content": json.dumps(analysis)}}
+                ]
+            }).encode("utf-8")
+        )
+
+        result = analyze_with_ai(self.incident)
+
+        self.assertEqual(result, analysis)
+        request = mock_urlopen.call_args.args[0]
+        self.assertEqual(
+            request.full_url,
+            "https://dashscope-intl.aliyuncs.com/"
+            "compatible-mode/v1/chat/completions",
+        )
+        self.assertEqual(
+            request.get_header("Authorization"),
+            "Bearer test-key",
+        )
+        self.assertEqual(json.loads(request.data)["model"], "qwen-plus")
+
+    @patch.dict(
+        "os.environ",
+        {
+            "CLOUDOPS_AI_API_KEY": "test-key",
+            "CLOUDOPS_AI_MODEL": "qwen-plus",
+            "CLOUDOPS_AI_ENDPOINT": (
+                "https://dashscope-intl.aliyuncs.com/"
+                "compatible-mode/v1/chat/completions"
+            ),
+            "CLOUDOPS_AI_TIMEOUT_SECONDS": "30",
+        },
+        clear=True,
+    )
+    @patch("kbass_monitoring.providers.openai_provider.urlopen")
+    def test_configurable_ai_timeout(self, mock_urlopen):
+        analysis = {
+            "explanation": "The service may be unavailable.",
+            "possible_causes": ["The process may have stopped."],
+            "recommended_actions": ["Inspect application logs."],
+        }
+        mock_urlopen.return_value.__enter__.return_value = io.BytesIO(
+            json.dumps({
+                "choices": [
+                    {"message": {"content": json.dumps(analysis)}}
+                ]
+            }).encode("utf-8")
+        )
+
+        self.assertEqual(analyze_with_ai(self.incident), analysis)
+        self.assertEqual(mock_urlopen.call_args.kwargs["timeout"], 30)
+
+    @patch.dict(
+        "os.environ",
+        {
+            "CLOUDOPS_AI_API_KEY": "test-key",
+            "CLOUDOPS_AI_MODEL": "qwen-plus",
+            "CLOUDOPS_AI_TIMEOUT_SECONDS": "30",
+        },
+        clear=True,
+    )
+    @patch("kbass_monitoring.providers.openai_provider.urlopen")
+    def test_invalid_ai_timeout(self, mock_urlopen):
+        import os
+
+        for invalid_value in ("0", "121", "abc", "-5", "3.5"):
+            with self.subTest(timeout=invalid_value):
+                os.environ["CLOUDOPS_AI_TIMEOUT_SECONDS"] = invalid_value
+
+                with self.assertRaises(ValueError):
+                    analyze_with_ai(self.incident)
+
+        mock_urlopen.assert_not_called()
+
+    @patch.dict(
+        "os.environ",
+        {
+            "CLOUDOPS_AI_API_KEY": "test-key",
+            "CLOUDOPS_AI_MODEL": "gemma-4-31b-it",
+            "CLOUDOPS_AI_ENDPOINT": (
+                "https://llm.jetstream-cloud.org/api/chat/completions"
+            ),
+            "CLOUDOPS_AI_TIMEOUT_SECONDS": "30",
+        },
+        clear=True,
+    )
+    @patch("kbass_monitoring.providers.openai_provider.urlopen")
+    def test_jetstream_endpoint(self, mock_urlopen):
+        analysis = {
+            "explanation": "The application may be unavailable.",
+            "possible_causes": ["The container may have stopped."],
+            "recommended_actions": ["Inspect container logs."],
+        }
+        response = {
+            "choices": [
+                {"message": {"content": json.dumps(analysis)}}
+            ]
+        }
+        mock_urlopen.return_value.__enter__.return_value = io.BytesIO(
+            json.dumps(response).encode("utf-8")
+        )
+        result = analyze_with_ai(self.incident)
+        self.assertEqual(result, analysis)
+        request = mock_urlopen.call_args.args[0]
+        self.assertEqual(
+            request.full_url,
+            "https://llm.jetstream-cloud.org/api/chat/completions",
+        )
+        self.assertEqual(
+            request.get_header("Authorization"),
+            "Bearer test-key",
+        )
+        self.assertEqual(
+            json.loads(request.data)["model"],
+            "gemma-4-31b-it",
+        )
+        self.assertEqual(
+            mock_urlopen.call_args.kwargs["timeout"],
+            30,
+        )
+
+    @patch.dict(
+        "os.environ",
+        {
+            "CLOUDOPS_AI_API_KEY": "test-key",
             "CLOUDOPS_AI_MODEL": "test-model",
             "CLOUDOPS_AI_ENDPOINT": "http://localhost:8080/api",
         },

@@ -36,26 +36,26 @@ groups:
           (
             rate(container_cpu_usage_seconds_total{
               cpu="total",
-              id=~"/docker/.*"
+              id=~"/docker/[a-f0-9]{64}"
             }[2m]) * 100
           ) > 80
         for: 1m
         labels:
           severity: warning
         annotations:
-          summary: "High CPU usage detected"
+          summary: "High CPU usage detected for {{ $labels.id }}"
           description: "Container CPU usage has exceeded 80% of one CPU core for at least one minute."
 
       - alert: HighMemoryUsage
         expr: |
           (
             container_memory_working_set_bytes{
-              id=~"/docker/.*"
+              id=~"/docker/[a-f0-9]{64}"
             } / 1024 / 1024
           ) > 512
         for: 1m
         labels:
           severity: warning
         annotations:
-          summary: "High memory usage detected"
+          summary: "High memory usage detected for {{ $labels.id }}"
           description: "Container memory working set has exceeded 512 MiB for at least one minute."

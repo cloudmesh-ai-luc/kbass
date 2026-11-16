@@ -1,0 +1,22 @@
+services:
+  app:
+    restart: unless-stopped
+    env_file: !override
+      - .env.cloud
+
+  prometheus:
+    restart: unless-stopped
+
+  grafana:
+    restart: unless-stopped
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+  redis:
+    restart: unless-stopped
+
+  cadvisor:
+    restart: unless-stopped
+
+volumes:
+  grafana-data:
