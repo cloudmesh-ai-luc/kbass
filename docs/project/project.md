@@ -9,8 +9,8 @@
 
 **Instructor:** Gregor von Laszewski
 
-**Date:** October 2026
-**Status:** In Progress – Monitoring, Rule-Based Troubleshooting, and Hybrid AI Integration Implemented
+**Date:** November 2026
+**Status:** In Progress – Core Monitoring, Rule-Based Troubleshooting, Hybrid AI Integration, and Local Docker Compose Deployment Implemented and Validated; Cloud Deployment and Live AI Inference Evaluation Pending
 
 ## 1. Project Overview
 
@@ -41,8 +41,9 @@ The system follows a phased implementation approach. The core monitoring pipelin
 The target architecture consists of:
 
 - **Application Layer:** A containerized Flask application exposing health information and monitoring metrics.
-- **Monitoring Layer:** Prometheus for metrics collection and alert evaluation.
+- **Monitoring Layer:** Prometheus for metrics collection and alert evaluation, with cAdvisor providing container resource monitoring.
 - **Visualization Layer:** Grafana for monitoring dashboards and performance visualization.
+- **Supporting Infrastructure Layer:** Redis for application support, including request-limiting infrastructure.
 - **Troubleshooting Layer:** Implemented rule-based and optional LLM-assisted incident analysis, supporting OpenAI and Ollama with caching, inference limits, and automatic fallback.
 - **Backend API Layer:** Flask-based REST APIs for providing incident information to client applications.
 - **Mobile Layer:** CloudOps Companion, a Flutter application for remote monitoring and notifications.
@@ -52,23 +53,27 @@ The mobile application will communicate with the backend through authenticated A
 
 ## 3. Technologies
 
-The project is expected to use:
+The project uses the following technologies, with their implementation status identified below:
 
-| Technology | Purpose |
-|---|---|
-| **Python / Flask** | Web application, backend services, and REST APIs |
-| **Docker / Docker Compose** | Containerization and local service orchestration |
-| **OrbStack** | Optional alternative to Docker Desktop for evaluation |
-| **Chameleon Cloud / OpenStack** | Planned research-cloud deployment |
-| **AWS** | Planned public-cloud deployment and comparison |
-| **Prometheus** | Metrics collection, monitoring, and incident detection |
-| **Grafana** | Monitoring dashboards and visualization |
-| **LLM / AI Integration** | Incident analysis and troubleshooting recommendations |
-| **Flutter / Dart** | Cross-platform mobile companion application |
-| **Firebase Cloud Messaging** | Planned mobile push notification delivery |
-| **GitHub / GitHub Actions / Makefile** | Version control, automation, testing, and deployment workflows |
+| Technology | Purpose | Status |
+|---|---|---|
+| **Python / Flask** | Web application, backend services, and REST APIs | Implemented |
+| **Docker / Docker Compose** | Containerization and local service orchestration | Implemented and locally validated |
+| **Prometheus** | Metrics collection, monitoring, and incident detection | Implemented and locally validated |
+| **Grafana** | Monitoring dashboards and visualization | Implemented and locally validated |
+| **cAdvisor** | Container resource monitoring | Implemented and locally validated |
+| **Redis** | Supporting infrastructure and request-limiting storage | Implemented |
+| **OpenAI / Ollama** | AI-assisted incident analysis and troubleshooting | Integration implemented; live inference evaluation pending |
+| **DashScope / Jetstream-compatible endpoints** | Additional OpenAI-compatible hosted inference integrations | Endpoint support implemented; live inference evaluation pending |
+| **AWS** | Public-cloud deployment and comparison | Planned; deployment validation pending |
+| **Chameleon Cloud / OpenStack** | Research-cloud deployment | Planned; deployment validation pending |
+| **Flutter / Dart** | Cross-platform mobile companion application | Planned extension |
+| **Firebase Cloud Messaging** | Mobile push notification delivery | Planned extension |
+| **OrbStack** | Optional alternative container runtime for evaluation | Optional |
+| **GitHub / Makefile** | Version control, project automation, testing, and development workflows | Implemented |
+| **GitHub Actions** | CI/CD automation | Future evaluation |
 
-The AI integration currently supports OpenAI and Ollama. Live model evaluation, final cloud deployment environments, and the mobile notification mechanism remain subject to project requirements, available resources, and implementation feasibility.
+The local Docker Compose environment has been validated. The cloud Compose configuration has passed configuration validation, but deployment to AWS EC2 and Chameleon Cloud has not yet been completed. AI provider integrations have automated test coverage, but successful live inference and diagnostic quality remain to be evaluated.
 
 ## 4. Project Objectives
 
@@ -209,7 +214,7 @@ The simulation endpoint was confirmed to return HTTP 404 after the experiment, i
 
 ### 8.3 Automated Testing
 
-An earlier test run completed with **11 tests passed**. The latest verified run on October 24, 2026 completed with **138 tests passed** and no failures.
+An earlier test run completed with **11 tests passed**. On October 24, 2026, the suite completed with **138 tests passed**. The latest verified run on November 15, 2026 completed with **156 tests passed and 10 subtests passed**, with no failures.
 
 ### 8.4 Alert Detection and Recovery Latency
 
@@ -311,7 +316,7 @@ production WSGI server.
 The reusable benchmarking script, detailed methodology, and complete
 results summary are documented in `benchmarks/README.md`.
 
-## 10. Implementation Progress — October 2026
+## 10. Implementation Progress — November 2026
 
 ### 10.1 Web Dashboard and Application Management
 
@@ -331,10 +336,15 @@ Supported AI integrations include:
 
 - OpenAI through its hosted chat-completions API.
 - Ollama through a restricted local endpoint.
+- DashScope through its OpenAI-compatible chat-completions endpoint.
+- Jetstream through its hosted OpenAI-compatible chat-completions endpoint.
 - Structured responses containing an explanation, possible causes, and recommended actions.
+- Configurable AI request timeouts, validated between 1 and 120 seconds.
 - Automatic rule-based fallback when AI is disabled, unavailable, or returns invalid output.
 
-AI-assisted analysis is disabled by default and requires explicit configuration.
+The hosted provider integrations use explicitly allowed endpoints and require provider credentials and model configuration. Automated tests verify request construction, endpoint selection, authentication headers, timeout configuration, and response handling using mocked provider responses.
+
+AI-assisted analysis is disabled by default and requires explicit configuration. Live inference performance and diagnostic quality remain subject to evaluation.
 
 ### 10.3 Reliability and Security Safeguards
 
@@ -352,16 +362,55 @@ These controls reduce operational risks but do not eliminate risks such as sensi
 
 ### 10.4 Automated Testing and Packaging
 
-On October 24, 2026, the project was verified using:
+The project was verified through automated testing and deployment checks.
 
-- `make install`: successful editable installation of `kbass-monitoring==0.1.0`.
-- `make test`: **138 tests passed in 0.41 seconds**.
+- **October 24, 2026:** `make install` completed successfully, and the test suite reported 138 passing tests.
+- **November 15, 2026:** `make test` completed with **156 passing tests and 10 passing subtests**, with no failures.
+- `make check`: Development prerequisites verified.
+- `make setup`: Configuration initialization completed.
+- `make smoke`: **5/5 deployment health checks passed** for Flask, Prometheus, Grafana, cAdvisor, and Redis.
+- Container image availability checks: **4/4 passed**.
+- Redis configuration checks: **5/5 passed**.
 
 The test suite covers application management, authentication, monitoring discovery, incident handling, AI client behavior, hybrid troubleshooting, caching, inference budgeting, and validation.
 
 AI client and incident integration tests use mocked provider responses. Consequently, these passing tests do not establish successful live inference against OpenAI or Ollama.
 
-### 10.5 Remaining Evaluation Work
+### 10.5 Deployment Reproducibility and Container Validation
+
+Additional work improved deployment consistency, service reliability, and environment configuration.
+
+**Pinned container images:**
+
+| Service | Image |
+|---|---|
+| Prometheus | prom/prometheus:v3.15.0 |
+| Grafana | grafana/grafana:13.2.3 |
+| cAdvisor | ghcr.io/google/cadvisor:0.55.0 |
+| Redis | redis:7.4.12-alpine |
+
+All four images passed local availability checks. Prometheus and Grafana were verified to provide AMD64 and ARM64 manifests.
+
+**Deployment reliability improvements:**
+
+- Health checks for Flask, Prometheus, Grafana, and cAdvisor.
+- Restart policies for monitoring services.
+- Redis health monitoring and configuration validation.
+- Localhost-bound service ports.
+- Redis persistence and network exposure checks.
+
+**Configuration and automation:**
+
+- scripts/setup.py generates private credentials and initializes required directories without overwriting existing configuration.
+- scripts/smoke.py performs read-only health checks against five services.
+- requirements.lock records a baseline snapshot of tested Python dependencies, not a fully validated cross-platform lock.
+- compose.cloud.yaml provides cloud-specific configuration and persistent Grafana storage.
+
+The combined local and cloud Compose configuration passed configuration validation using the Docker Compose config command. This verifies configuration validity, not successful deployment on a remote cloud provider.
+
+The local deployment passed all five smoke checks. AWS EC2 and Chameleon Cloud deployment and operational validation remain outstanding.
+
+### 10.6 Remaining Evaluation Work
 
 The next development and evaluation activities include:
 
@@ -374,10 +423,10 @@ The next development and evaluation activities include:
 
 ## 11. Conclusion
 
-This project aims to demonstrate how cloud computing, DevOps monitoring, and AI-assisted troubleshooting can be integrated into a practical system for detecting and understanding application incidents.
+CloudOps AI demonstrates how cloud computing, DevOps monitoring, and AI-assisted troubleshooting can be combined in a practical application monitoring platform. The implemented system integrates a Flask backend with Prometheus, Grafana, cAdvisor, and Redis to support application monitoring, metrics visualization, application management, and incident investigation.
 
-By combining a containerized application, Prometheus, Grafana, cloud infrastructure, and AI-generated recommendations, the project will provide an end-to-end demonstration of application monitoring and incident response.
+The project also implements hybrid troubleshooting that combines rule-based analysis with optional AI-generated explanations and recommendations. Support for OpenAI, Ollama, DashScope, and Jetstream-compatible endpoints provides flexibility in configuring AI inference providers. Security safeguards, automated tests, container health checks, and deployment automation further improve the reliability and maintainability of the system.
 
-The planned **CloudOps Companion** extension will further explore how administrators can receive notifications and respond to operational issues remotely through a Flutter mobile application.
+The local Docker Compose deployment has been successfully validated, with 156 automated tests and 10 subtests passing and all five deployment smoke checks succeeding. These results demonstrate substantial progress toward the project objectives. However, successful local validation does not establish production readiness or successful deployment across cloud providers.
 
-Together, these components will illustrate a practical approach to improving cloud application visibility, incident understanding, and operational responsiveness.
+Future work includes validating deployments on AWS EC2 and Chameleon Cloud, conducting live AI inference experiments, measuring diagnostic quality and response latency, and evaluating additional monitoring approaches. The proposed **CloudOps Companion** Flutter application remains an optional extension for remote monitoring and notifications. These activities represent the next steps toward expanding and evaluating the platform beyond its current validated local implementation.
