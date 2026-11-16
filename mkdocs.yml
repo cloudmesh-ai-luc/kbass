@@ -18,5 +18,6 @@ theme:
 nav:
   - Home: index.md
   - Project: project/project.md
-
+  - Midterm Report: project/midterm.md
+  - Deployment Guide: deployment.md
   - Feedback: instructor_feedback_2026-10-15.md
