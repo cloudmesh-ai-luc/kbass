@@ -12,3 +12,5 @@ README.md
 project/
 images/
 assignments/
+# Local application runtime data
+data/
